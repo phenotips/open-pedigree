@@ -1,0 +1,476 @@
+*::-moz-focus-inner {
+ padding:0;
+ border:0
+}
+#body {
+ font-family:Arial,Verdana,sans-serif
+}
+.edit_section {
+ display:none!important
+}
+#headerglobal {
+ position:relative
+}
+#company h1 a {
+ color:#f5f5f5!important;
+ text-decoration:none!important
+}
+#company h1 {
+ border:0 none;
+ color:#f5f5f5;
+ font-size:1.2em;
+ margin:0 20px 0;
+ position:absolute;
+ right:5%;
+ text-shadow:0 0 6px #777;
+ text-transform:uppercase
+}
+.xdocCreation {
+ float:right;
+ width:48%
+}
+#document-title h1 {
+ margin:0 0 .5em;
+ padding:5px 0 0
+}
+#mainContentArea,#mainEditArea {
+ overflow:visible;
+ padding:10px;
+ position:relative
+}
+.actionmenu {
+ height:1.8em
+}
+.actionmenu a,.actionmenu a:visited {
+ padding-top:.3em;
+ line-height:1.2em
+}
+.actionmenu a strong {
+ line-height:inherit
+}
+.rightmenu {
+ padding-right:15px
+}
+.actionmenu a,.actionmenu a:visited {
+ font-family:inherit
+}
+#phenotips-mainmenu,#phenotips-globalTools {
+ background-color:rgba(255,255,255,0.1);
+ box-shadow:0 0 1px rgba(0,0,0,0.2);
+ color:#f3f3f3;
+ text-shadow:0 1px 1px rgba(0,0,0,0.5);
+ z-index:1001
+}
+#phenotips-mainmenu .menu-horizontal,#phenotips-globalTools .menu-horizontal {
+ font-size:1em
+}
+#phenotips-mainmenu .topmenuentry {
+ background-image:none;
+ white-space:nowrap
+}
+#phenotips-mainmenu a,#phenotips-globalTools a {
+ display:inline-block;
+ float:none;
+ text-transform:none!important;
+ font-weight:normal!important;
+ font-size:1em
+}
+#phenotips-globalTools .search input {
+ font-size:1em;
+ margin:-1px;
+ padding:0 3px;
+ vertical-align:baseline;
+ width:20em
+}
+#phenotips-globalTools label {
+ white-space:nowrap
+}
+#phenotips-globalTools .menu.menu-horizontal ul ul {
+ background-color:#0272a6
+}
+#phenotips-globalTools .menu.menu-horizontal .xDropdown+ul {
+ margin-left:0
+}
+#create-patient-record {
+ box-sizing:content-box;
+ background:transparent;
+ border:0 none;
+ color:#f3f3f3;
+ cursor:pointer;
+ display:inline-block;
+ font-family:inherit;
+ font-size:1em;
+ padding:2px 0 0;
+ text-shadow:0 1px 1px rgba(0,0,0,0.5);
+ white-space:nowrap;
+ width:auto
+}
+#create-patient-record:hover,label[for="create-patient-record"]:hover {
+ text-decoration:underline
+}
+#phenotips-globalTools .search .icon-search,#phenotips-globalTools .search .fa-search {
+ color:#f3f3f3;
+ display:inline-block;
+ margin-right:5px
+}
+ul.filters {
+ margin:10px;
+ list-style-type:none
+}
+ul.filters li {
+ padding:0 0 1em
+}
+ul.filters .accepted-suggestions {
+ margin:0!important
+}
+.bottombuttons {
+ background:#f9f9f9;
+ border:1px solid #fff;
+ bottom:0;
+ box-shadow:0 0 8px rgba(0,0,0,0.2);
+ left:0;
+ margin:0 25px!important;
+ padding:.5em 10px;
+ position:fixed;
+ right:0;
+ z-index:3
+}
+.bottombuttons input[name="action_cancel"] {
+ float:right
+}
+input.button:disabled,.buttonwrapper button:disabled,input.button:disabled:hover,.buttonwrapper button:disabled:hover {
+ background-image:none
+}
+input.button,.buttonwrapper button,.buttonwrapper a:visited,.buttonwrapper a:link,.buttonwrapper a:active {
+ white-space:nowrap
+}
+.add-data-button,.buttonwrapper a.add-data-button:link,.buttonwrapper a.add-data-button:visited,.buttonwrapper a.add-data-button:active {
+ background-color:#2173af;
+ border-radius:4px;
+ box-shadow:0 0 6px #e8e8e8;
+ color:#fff;
+ display:inline-block;
+ font:normal normal 700 .8em/140% "Helvetica",sans-serif;
+ padding:.3em .2em .3em 2.2em;
+ position:relative;
+ text-transform:uppercase;
+ white-space:nowrap
+}
+.add-data-button:hover,.buttonwrapper a.add-data-button:hover {
+ box-shadow:0 0 6px #0089dc
+}
+.general-tools {
+ float:right;
+ margin:-1.6em 3px 0;
+ padding:3px 0;
+ position:relative
+}
+.general-tools label {
+ color:#0089dc;
+ cursor:pointer
+}
+.general-tools label:hover {
+ text-decoration:underline
+}
+#patient-creation-form {
+ position:relative;
+ display:inline-block
+}
+.xwiki-livetable-pagination #patient-creation-form {
+ float:left
+}
+label.create-button-label,.add-data-button:before {
+ color:#fff;
+ cursor:pointer;
+ display:inline-block;
+ font-size:1.25em;
+ font-weight:bold;
+ height:.8em;
+ left:.4em;
+ line-height:.9em;
+ position:absolute;
+ text-align:center;
+ text-shadow:none;
+ top:.24em;
+ vertical-align:middle;
+ width:.8em!important;
+ z-index:2
+}
+thead.xwiki-livetable-display-header td.xwiki-livetable-display-header-filter input,thead.xwiki-livetable-display-header td.xwiki-livetable-display-header-filter select {
+ padding:.3em!important
+}
+input[type=text],input[type=password],textarea {
+ border-color:#e8e8e8;
+ border-radius:4px;
+ box-shadow:0 1px 2px rgba(0,0,0,.4) inset!important;
+ width:100%
+}
+textarea {
+ box-sizing:border-box;
+ width:100%
+}
+input[type=text]:focus,input[type=password]:focus,textarea:focus {
+ border-color:#0089dc
+}
+body .xwiki-livetable-topfilters-container,body .xwiki-livetable-tagcloud-container {
+ background-color:#f3f3f3;
+ border-color:#2173af
+}
+body .xwiki-livetable-topfilters-tip .tippointer,body .xwiki-livetable-tagcloud-tip .tippointer {
+ border-top-color:#2173af
+}
+body .xwiki-livetable-topfilters-tip .tippointer div,body .xwiki-livetable-tagcloud-tip .tippointer div {
+ border-top-color:#f3f3f3;
+ top:-22px
+}
+body .xwiki-livetable-topfilters-container .value-cloud-tools a {
+ color:#636b75;
+ font-weight:bold
+}
+#patients.xwiki-livetable .actions {
+ text-align:right
+}
+h1:target,h2:target,h3:target {
+ background-color:#ffc
+}
+#globallinks {
+ display:none
+}
+#mainmenu {
+ background-image:none;
+ box-shadow:none
+}
+#mainmenu * {
+ text-shadow:none
+}
+.editbody #footerglobal {
+ margin-bottom:4em
+}
+.main {
+ padding-bottom:0
+}
+.panels .gadget .gadget-title * {
+ line-height:1em!important
+}
+.gadget label[for=create-patient-record],.gadget .extra {
+ color:#0089dc;
+ cursor:pointer;
+ float:right;
+ margin-left:1em;
+ text-decoration:none
+}
+#xdocFooter {
+ display:none
+}
+.language-block {
+ position:relative
+}
+.language-block .rightmenu {
+ top:10px;
+ margin-right:10px
+}
+.language-block .menu-horizontal>ul>li>span {
+ color:#f3f3f3;
+ margin:0;
+ padding:0;
+ white-space:pre
+}
+.language-block .menu-horizontal>ul>li:last-of-type {
+ padding-right:0
+}
+.language-block .menu-horizontal>ul ul {
+ margin:0;
+ z-index:2000
+}
+.language-block .menu-horizontal .selected {
+ position:relative
+}
+.language-block .menu-horizontal .selected:before {
+ content:"✓";
+ display:block;
+ position:absolute;
+ left:.3em
+}
+.xdialog-box .button {
+ min-width:5em
+}
+.commentcontent {
+ white-space:pre-wrap
+}
+.before-entity-data {
+ font-size:.87em;
+ margin:0 -11px;
+ padding:5px 10px
+}
+.before-entity-data a.button {
+ font-size:1em;
+ text-transform:none;
+ font-weight:normal
+}
+.menu-horizontal ul {
+ list-style-type:none;
+ margin:auto
+}
+.menu-horizontal li {
+ cursor:default;
+ line-height:16px;
+ min-height:16px;
+ padding:.3em 1.3em
+}
+.menu-horizontal li:last-of-type {
+ padding-right:10px
+}
+.menu .fa:before {
+ line-height:1em!important
+}
+.menu-horizontal img {
+ vertical-align:middle
+}
+.menu-horizontal>ul * {
+ line-height:1.2em
+}
+.menu-horizontal li li:empty {
+ border-top:1px solid #e8e8e8;
+ line-height:1px;
+ min-height:auto;
+ padding:0
+}
+.menu.menu-horizontal {
+ font-size:.85em;
+ padding-left:25px
+}
+.menu-horizontal li li:empty {
+ border-top:1px solid #9f9f9f;
+ margin:.5em 1em
+}
+.menu-horizontal>ul>li:empty {
+ border-left:1px solid #9f9f9f;
+ margin:0 .5em;
+ padding:0;
+ vertical-align:middle
+}
+.menu-horizontal li a,.menu-horizontal li a:visited {
+ color:inherit
+}
+.menu-horizontal>ul>li {
+ display:inline-block
+}
+.menu-horizontal>ul>li>.xDropdown:after {
+ content:'\25BC';
+ font-size:.8em;
+ line-height:1em;
+ margin-left:.5em
+}
+.menu-horizontal>ul ul {
+ background-color:#fff;
+ border-radius:0 0 .8em .8em;
+ box-shadow:0 1px 1px #636b75;
+ display:none;
+ margin:.25em 0 0 -1.3em;
+ padding-bottom:.3em;
+ position:absolute;
+ z-index:1000
+}
+.menu-horizontal li:hover>ul {
+ display:block
+}
+.menu-horizontal.fixedWidth li li {
+ position:relative
+}
+.menu-horizontal.fixedWidth ul ul {
+ width:12em
+}
+.menu-horizontal.fixedWidth ul ul ul {
+ left:12em;
+ margin:0;
+ top:0
+}
+.menu-vertical li:empty,.menu-horizontal li li:empty {
+ min-height:1px!important
+}
+.content-actions {
+ float:right;
+ margin:0;
+ position:absolute;
+ right:0;
+ top:0;
+ z-index:1000
+}
+.page-actions .menu.menu-horizontal {
+ background-color:#0272a6;
+ background-image:linear-gradient(to bottom,#3a8abc 0,#0272a6 50%);
+ border:0 none;
+ color:#f3f3f3;
+ font-size:1em;
+ line-height:1.2em;
+ padding:0 0 0 10px;
+ text-shadow:none
+}
+.page-actions .menu.menu-horizontal a:hover {
+ text-decoration:none!important;
+ text-shadow:0 0 2px #ffc
+}
+.page-actions .menu-horizontal>ul>li {
+ padding:.3em 1.3em .3em .3em
+}
+.page-actions .menu-horizontal>ul {
+ white-space:nowrap
+}
+.page-actions .menu-horizontal ul ul {
+ background:none repeat scroll 0 0 #0272a6;
+ box-shadow:0 1px 1px #e8e8e8;
+ white-space:normal
+}
+.page-actions .menu-horizontal input {
+ background:transparent!important;
+ border:1px solid transparent!important;
+ color:inherit!important;
+ margin:-1px!important;
+ padding:0!important;
+ font-size:inherit!important;
+ font-family:inherit!important
+}
+.page-actions .menu-horizontal label:hover,.page-actions .menu-horizontal label:hover input {
+ cursor:pointer;
+ text-shadow:0 0 2px #ffc
+}
+#document-head .title-tab.active h1 {
+ border-radius:inherit;
+ box-shadow:inherit;
+ font-size:inherit;
+ letter-spacing:inherit;
+ text-shadow:inherit;
+ color:#f3f3f3;
+ background-color:#0272a6;
+ background-image:linear-gradient(to bottom,#0272a6 0,#3a8abc 50%);
+ border:0 none;
+ border-bottom:0 none;
+ margin:0;
+ padding:.4em 11px
+}
+#document-head .title-tab {
+ display:inline-block;
+ vertical-align:top;
+ line-height:0;
+ cursor:default;
+ font-size:1.2em;
+ letter-spacing:2px;
+ border-radius:8px 8px 0 0;
+ box-shadow:0 -3px 3px rgba(0,0,0,0.15);
+ text-transform:none;
+ text-shadow:0 0 1px #fff
+}
+#document-head .title-tab:not(.active) {
+ background-color:#EEE;
+ background-image:linear-gradient(to bottom,#EEE 0,#DDD 50%);
+ font-weight:bold;
+ margin:0;
+ padding:.4em 11px
+}
+#document-head .title-tab a {
+ color:#636b75
+}
+#document-head .title-tab a:hover {
+ color:#0089dc;
+ text-decoration:none
+}

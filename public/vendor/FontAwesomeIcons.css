@@ -1,0 +1,24 @@
+body .fa {
+ display:inline;
+ font-family:inherit
+}
+.fa.fa-fw {
+ display:inline-block;
+}
+.fa:before {
+ display:inline-block;
+ font-family:FontAwesome
+}
+body .fa-spin,body .fa-pulse {
+ -webkit-animation:none;
+ animation:none
+}
+.fa-spin:before {
+ display:inline-block;
+ -webkit-animation:fa-spin 2s infinite linear;
+ animation:fa-spin 2s infinite linear
+}
+.fa-pulse:before {
+ -webkit-animation:fa-spin 1s infinite steps(8);
+ animation:fa-spin 1s infinite steps(8)
+}
