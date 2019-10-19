@@ -29,6 +29,7 @@ import '../style/editor.css';
 
 var PedigreeEditor = Class.create({
   initialize: function(options) {
+    options = options || {};
 
     // URL to load patient data from and save data to
     var patientDataUrl = options.patientDataUrl || '';

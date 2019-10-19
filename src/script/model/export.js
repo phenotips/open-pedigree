@@ -163,3 +163,5 @@ PedigreeExport.createNewIDs = function(pedigree, idGenerationPreference, maxLeng
 
   return idToNewId;
 };
+
+export default PedigreeExport;

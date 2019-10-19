@@ -1,5 +1,3 @@
-import FileSaver from 'vendor/filesaver/FileSaver';
-var saveTextAs = FileSaver.saveTextAs;
 import PedigreeExport from 'pedigree/model/export';
 
 /**
