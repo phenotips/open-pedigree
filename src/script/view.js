@@ -1,3 +1,4 @@
+import Raphael from 'pedigree/raphael';
 import { arrayContains, Timer } from 'pedigree/model/helpers';
 import Partnership from 'pedigree/view/partnership';
 import Person from 'pedigree/view/person';

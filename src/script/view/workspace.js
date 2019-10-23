@@ -1,3 +1,5 @@
+import Raphael from 'pedigree/raphael';
+
 /**
  * Workspace contains the Raphael canvas, the zoom/pan controls and the menu bar
  * on the top. The class includes functions for managing the Raphael paper object and coordinate transformation methods
@@ -25,6 +27,10 @@ var Workspace = Class.create({
 
     this.background = this.getPaper().rect(0,0, this.width, this.height).attr({fill: 'blue', stroke: 'none', opacity: 0}).toBack();
     this.background.node.setAttribute('class', 'panning-background');
+
+    this.workArea.insert(new Element('div', {'id': 'attribution'})
+      .insert('&copy; 2019 ')
+      .insert(new Element('a', {'href': 'https://gene42.com'}).update('Gene42 Inc.')));
 
     this.adjustSizeToScreen = this.adjustSizeToScreen.bind(this);
     Event.observe (window, 'resize', me.adjustSizeToScreen);
@@ -141,6 +147,10 @@ var Workspace = Class.create({
      */
   generateTopMenu: function() {
     var menu = new Element('div', {'id' : 'editor-menu'});
+
+    menu.insert(new Element('a', {'class': 'title', 'href': 'https://github.com/phenotips/open-pedigree'})
+        .update('Open Pedigree'));
+
     this.getWorkArea().insert({before : menu});
     var submenus = [];
 
@@ -200,6 +210,12 @@ var Workspace = Class.create({
       return mi;
     };
     submenus.each(_createSubmenu);
+
+    menu.insert(new Element('div', {'class': 'powered-by'})
+      .insert('Powered by ')
+      .insert(new Element('a', {'href': 'https://phenotips.org/'})
+        .update('PhenoTips')
+        .insert(new Element('sup').update('&reg;'))));
   },
 
   /**

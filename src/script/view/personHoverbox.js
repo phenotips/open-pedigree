@@ -44,78 +44,49 @@ var PersonHoverbox = Class.create(AbstractHoverbox, {
 
     editor.getPaper().setStart();
 
-    if (PedigreeEditorParameters.attributes.newHandles) {
-      var strokeWidth = editor.getWorkspace().getSizeNormalizedToDefaultZoom(PedigreeEditorParameters.attributes.handleStrokeWidth);
+    var strokeWidth = editor.getWorkspace().getSizeNormalizedToDefaultZoom(PedigreeEditorParameters.attributes.handleStrokeWidth);
 
-      var partnerGender = 'U';
-      if (node.getGender() == 'F') {
-        partnerGender = 'M';
-      }
-      if (node.getGender() == 'M') {
-        partnerGender = 'F';
-      }
+    var partnerGender = 'U';
+    if (node.getGender() == 'F') {
+      partnerGender = 'M';
+    }
+    if (node.getGender() == 'M') {
+      partnerGender = 'F';
+    }
 
-      // static part (2 lines: going above the node + going to the left)
-      var splitLocationY = y-PedigreeEditorParameters.attributes.personHandleBreakY-4;
-      var path = [['M', x, y],['L', x, splitLocationY], ['L', x-PedigreeEditorParameters.attributes.personSiblingHandleLengthX, splitLocationY]];
-      editor.getPaper().path(path).attr({'stroke-width': strokeWidth, stroke: 'gray'}).insertBefore(nodeShapes);
+    // static part (2 lines: going above the node + going to the left)
+    var splitLocationY = y-PedigreeEditorParameters.attributes.personHandleBreakY-4;
+    var path = [['M', x, y],['L', x, splitLocationY], ['L', x-PedigreeEditorParameters.attributes.personSiblingHandleLengthX, splitLocationY]];
+    editor.getPaper().path(path).attr({'stroke-width': strokeWidth, stroke: 'gray'}).insertBefore(nodeShapes);
 
-      // sibling handle
-      this.generateHandle('sibling', x-PedigreeEditorParameters.attributes.personSiblingHandleLengthX+strokeWidth/3, splitLocationY, x-PedigreeEditorParameters.attributes.personSiblingHandleLengthX+strokeWidth/2, splitLocationY+PedigreeEditorParameters.attributes.personSiblingHandleLengthY,
-        'Click to create a sibling or drag to an existing parentless person (valid choices will be highlighted in green)', 'U');
+    // sibling handle
+    this.generateHandle('sibling', x-PedigreeEditorParameters.attributes.personSiblingHandleLengthX+strokeWidth/3, splitLocationY, x-PedigreeEditorParameters.attributes.personSiblingHandleLengthX+strokeWidth/2, splitLocationY+PedigreeEditorParameters.attributes.personSiblingHandleLengthY,
+      'Click to create a sibling or drag to an existing parentless person (valid choices will be highlighted in green)');
 
-      if (editor.getGraph().getParentRelationship(node.getID()) === null) {
-        // hint for the parent handle
-        var topHandleHint = undefined;
-        if (PedigreeEditorParameters.attributes.enableHandleHintImages) {
-          var hintSize = PedigreeEditorParameters.attributes.radius/2;
-          var path = [['M', x-hintSize, y- PedigreeEditorParameters.attributes.personHandleLength],['L', x+hintSize, y- PedigreeEditorParameters.attributes.personHandleLength]];
-          var line1  = editor.getPaper().path(path).attr({'stroke-width': strokeWidth/3, stroke: '#555555'}).toBack();
-          var father = editor.getPaper().rect(x-hintSize-11,y-PedigreeEditorParameters.attributes.personHandleLength-5.5,11,11).attr({fill: '#CCCCCC'}).toBack();
-          var mother = editor.getPaper().circle(x+hintSize+6,y-PedigreeEditorParameters.attributes.personHandleLength,6).attr({fill: '#CCCCCC'}).toBack();
-          var topHandleHint = editor.getPaper().set().push(line1, father, mother);
-        }
-        // parent handle
-        this.generateHandle('parent', x, splitLocationY, x, y - PedigreeEditorParameters.attributes.personHandleLength,
-          'Click to create new nodes for the parents or drag to an existing person or partnership (valid choices will be highlighted in green). Dragging to a person will create a new relationship.', 'F', topHandleHint);
-      } else {
-        if (PedigreeEditorParameters.attributes.enableHandleHintImages) {
-          var path = [['M', x, splitLocationY],['L', x, y-PedigreeEditorParameters.attributes.personHoverBoxRadius+4]];
-          editor.getPaper().path(path).attr({'stroke-width': strokeWidth, stroke: 'gray'}).insertBefore(nodeShapes);
-        }
-      }
+    if (editor.getGraph().getParentRelationship(node.getID()) === null) {
+      // parent handle
+      this.generateHandle('parent', x, splitLocationY, x, y - PedigreeEditorParameters.attributes.personHandleLength,
+        'Click to create new nodes for the parents or drag to an existing person or partnership (valid choices will be highlighted in green). Dragging to a person will create a new relationship.');
+    }
 
-      if (!node.isFetus()) {
+    if (!node.isFetus()) {
 
-        if (node.getChildlessStatus() === null) {
-          // children handle
-          //static part (going right below the node)
-          var path = [['M', x, y],['L', x, y+PedigreeEditorParameters.attributes.personHandleBreakX]];
-          editor.getPaper().path(path).attr({'stroke-width': strokeWidth, stroke: 'gray'}).insertBefore(nodeShapes);
-          this.generateHandle('child', x, y+PedigreeEditorParameters.attributes.personHandleBreakX-2, x, y+PedigreeEditorParameters.attributes.personHandleLength,
-            'Click to create a new child node or drag to an existing parentless person (valid choices will be highlighted in green)', 'U');
-        }
-
-        // partner handle
-        var vertPosForPartnerHandles = y;
-        //static part (going right form the node)
-        var path = [['M', x, vertPosForPartnerHandles],['L', x + PedigreeEditorParameters.attributes.personHandleBreakX, vertPosForPartnerHandles]];
+      if (node.getChildlessStatus() === null) {
+        // children handle
+        //static part (going right below the node)
+        var path = [['M', x, y],['L', x, y+PedigreeEditorParameters.attributes.personHandleBreakX]];
         editor.getPaper().path(path).attr({'stroke-width': strokeWidth, stroke: 'gray'}).insertBefore(nodeShapes);
-        this.generateHandle('partnerR', x + PedigreeEditorParameters.attributes.personHandleBreakX - 2, vertPosForPartnerHandles, x + PedigreeEditorParameters.attributes.personHandleLength, vertPosForPartnerHandles,
-          'Click to create a new partner node or drag to an existing node (valid choices will be highlighted in green)', partnerGender);
-      }
-    } else {
-      if (editor.getGraph().getParentRelationship(node.getID()) === null) {
-        this.generateHandle('parent',   x, y, x, y - PedigreeEditorParameters.attributes.personHandleLength, 'Click to create new nodes for the parents or drag to an existing person or partnership (valid choices will be highlighted in green)');
+        this.generateHandle('child', x, y+PedigreeEditorParameters.attributes.personHandleBreakX-2, x, y+PedigreeEditorParameters.attributes.personHandleLength,
+          'Click to create a new child node or drag to an existing parentless person (valid choices will be highlighted in green)');
       }
 
-      if (!node.isFetus()) {
-        if (node.getChildlessStatus() === null) {
-          this.generateHandle('child',x, y, x, y + PedigreeEditorParameters.attributes.personHandleLength, 'Click to create a new child node or drag to an existing parentless node (valid choices will be highlighted in green)');
-        }
-        this.generateHandle('partnerR', x, y, x + PedigreeEditorParameters.attributes.personHandleLength, y, 'Click to create a new partner node or drag to an existing node (valid choices will be highlighted in green)');
-        this.generateHandle('partnerL', x, y, x - PedigreeEditorParameters.attributes.personHandleLength, y, 'Click to create a new partner node or drag to an existing node (valid choices will be highlighted in green)');
-      }
+      // partner handle
+      var vertPosForPartnerHandles = y;
+      //static part (going right form the node)
+      var path = [['M', x, vertPosForPartnerHandles],['L', x + PedigreeEditorParameters.attributes.personHandleBreakX, vertPosForPartnerHandles]];
+      editor.getPaper().path(path).attr({'stroke-width': strokeWidth, stroke: 'gray'}).insertBefore(nodeShapes);
+      this.generateHandle('partnerR', x + PedigreeEditorParameters.attributes.personHandleBreakX - 2, vertPosForPartnerHandles, x + PedigreeEditorParameters.attributes.personHandleLength, vertPosForPartnerHandles,
+        'Click to create a new partner node or drag to an existing node (valid choices will be highlighted in green)');
     }
 
     this._currentHandles.push( editor.getPaper().setFinish() );

@@ -1,3 +1,4 @@
+import Raphael from 'pedigree/raphael';
 import Legend from 'pedigree/view/legend';
 import Person from 'pedigree/view/person';
 
@@ -11,7 +12,7 @@ import Person from 'pedigree/view/person';
 var GeneLegend = Class.create( Legend, {
 
   initialize: function($super) {
-    $super('Candidate Genes', true);
+    $super('Candidate Genes');
   },
 
   _getPrefix: function(id) {
@@ -34,29 +35,6 @@ var GeneLegend = Class.create( Legend, {
     }
 
     return $super(geneID, name);
-  },
-
-  /**
-     * Callback for dragging an object from the legend onto nodes
-     *
-     * @method _onDropGeneric
-     * @param {Person} Person node
-     * @param {String|Number} id ID of the gene being dropped
-     */
-  _onDropObject: function(node, geneID) {
-    if (node.isPersonGroup()) {
-      return;
-    }
-    var currentGenes = node.getGenes().slice(0);
-    if (currentGenes.indexOf(geneID) == -1) {   // only if the node does not have this gene yet
-      currentGenes.push(geneID);
-      editor.getView().unmarkAll();
-      var properties = { 'setGenes': currentGenes };
-      var event = { 'nodeID': node.getID(), 'properties': properties };
-      document.fire('pedigree:node:setproperty', event);
-    } else {
-      alert('This person already has the selected candidate gene');
-    }
   },
 
   /**

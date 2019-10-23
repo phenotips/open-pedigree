@@ -12,7 +12,7 @@ import Legend from 'pedigree/view/legend';
 var HPOLegend = Class.create( Legend, {
 
   initialize: function($super) {
-    $super('Phenotypes', true);
+    $super('Phenotypes');
 
     this._termCache = {};
   },
@@ -32,7 +32,7 @@ var HPOLegend = Class.create( Legend, {
     hpoID = HPOTerm.sanitizeID(hpoID);
     if (!this._termCache.hasOwnProperty(hpoID)) {
       var whenNameIsLoaded = function() {
-        this._updateTermName(hpoID); 
+        this._updateTermName(hpoID);
       };
       this._termCache[hpoID] = new HPOTerm(hpoID, null, whenNameIsLoaded.bind(this));
     }
@@ -77,30 +77,7 @@ var HPOLegend = Class.create( Legend, {
     //console.log("updating phenotype display for " + id + ", name = " + this.getTerm(id).getName());
     var name = this._legendBox.down('li#' + this._getPrefix() + '-' + id + ' .disorder-name');
     name.update(this.getTerm(id).getName());
-  },
-
-  /**
-     * Callback for dragging an object from the legend onto nodes
-     *
-     * @method _onDropGeneric
-     * @param {Person} Person node
-     * @param {String|Number} id ID of the phenotype being dropped
-     */
-  _onDropObject: function(node, hpoID) {
-    if (node.isPersonGroup()) {
-      return;
-    }
-    var currentHPO = node.getHPO().slice(0);
-    if (currentHPO.indexOf(hpoID) == -1) {
-      currentHPO.push(hpoID);
-      editor.getView().unmarkAll();
-      var properties = { 'setHPO': currentHPO };
-      var event = { 'nodeID': node.getID(), 'properties': properties };
-      document.fire('pedigree:node:setproperty', event);
-    } else {
-      alert('This person already has the selected phenotype');
-    }
-  },
+  }
 });
 
 export default HPOLegend;

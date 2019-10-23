@@ -1,3 +1,4 @@
+import Raphael from 'pedigree/raphael';
 import { Timer } from 'pedigree/model/helpers';
 import AbstractPersonVisuals from 'pedigree/view/abstractPersonVisuals';
 import { ChildlessBehaviorVisuals} from 'pedigree/view/abstractNodeVisuals';
@@ -177,9 +178,6 @@ var PersonVisuals = Class.create(AbstractPersonVisuals, {
 
     if (this.getNode().getLastName()) {
       text += ' ' + this.getNode().getLastName();
-      this.getNode().getLastNameAtBirth() && (text += ' (' + this.getNode().getLastNameAtBirth() + ')');
-    } else {
-      this.getNode().getLastNameAtBirth() && (text += ' ' + this.getNode().getLastNameAtBirth());
     }
 
     this._nameLabel && this._nameLabel.remove();

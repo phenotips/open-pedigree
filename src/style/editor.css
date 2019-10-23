@@ -5,49 +5,6 @@
   overflow: hidden;
 }
 /* =========================================
- * NOTIFICATIONS
- */
-#body .xnotification-container {
-  right: 0 !important;
-  left: auto !important;
-  width: 250px;
-}
-#body .xnotification {
-  background: #FFFFFF none 2px .7em no-repeat !important;
-  border: 2px solid #E8E8E8;
-  box-shadow: 0 0 6px #AAA, 0 0 25px #DDD inset;
-  color: #636B75 !important;
-  display: block;
-  font-weight: normal;
-  margin: 2px;
-  padding: 0.5em 22px;
-  text-align: left;
-  width: 200px;
-}
-#body .xnotification-inprogress {
-  background-image: url("/resources/icons/xwiki/spinner.gif") !important;
-}
-#body .xnotification-error {
-  background-image: url("/resources/icons/silk/delete.png") !important;
-  color: #CC3333 !important;
-  border-color: #CC3333 !important;
-}
-#body .xnotification-warning {
-  background-image: url("/resources/icons/silk/error.png") !important;
-  color: #D09000 !important;
-  border-color: #D09000 !important;
-}
-#body .xnotification-info {
-  background-image: url("/resources/icons/silk/information.png") !important;
-  color: #336699 !important;
-  border-color: #336699 !important;
-}
-#body .xnotification-done {
-  background-image: url("/resources/icons/silk/tick.png") !important;
-  color: #008000 !important;
-  border-color: #008000 !important;
-}
-/* =========================================
  * MENU
  */
 #editor-menu {
@@ -92,15 +49,39 @@
 #editor-menu .disabled-menu-item:last-of-type {
   margin: 0;
 }
-.loading-indicator {
-    background-image: url("/resources/icons/xwiki/ajax-loader-large.gif");
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 100px;
-    width: 200px;
-}
 #editor-menu .menu-item:hover {
   box-shadow: #777 0 0 5px 0;
+}
+
+#editor-menu .title {
+  float: left;
+  padding: .35em;
+  margin: 0 .7em;
+
+  padding-left: 27px; /* for background image */
+  background: url(../assets/open-pedigree-icon.png);
+  background-repeat: no-repeat;
+  background-position-y: center;
+
+  border-right: 1px solid #ccc;
+  margin-right: 1em;
+  padding-right: 1em;
+}
+
+#editor-menu a.title {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+#editor-menu .powered-by {
+  float: right;
+  padding: .35em;
+  margin: 0 .7em 0 0;
+}
+
+#editor-menu .powered-by sup {
+  font-size: 0.6em;
 }
 
 
@@ -375,6 +356,9 @@
 .menu-box .field-gender {
   padding: .8em 0;
 }
+.menu-box .field-state {
+  padding: .8em 0;
+}
 .menu-box .field-box input[type=text] {
   width: 99%;
 }
@@ -513,16 +497,6 @@
   width: 48%;
   float: right;
 }
-.menu-box .field-last_name_birth {
-  width: 48%;
-  float: left;
-  padding: .5em 0 0.9em;
-}
-.menu-box .field-external_id {
-  width: 48%;
-  float: right;
-  padding: .5em 0 0.9em;
-}
 .menu-box .field-date_of_birth {
   width: 48%;
   float: left;
@@ -530,7 +504,6 @@
 .menu-box .field-date_of_death {
   width: 48%;
   float: right;
-  margin-top: -5px; /* TODO: investigate why elements float below its intended position */
 }
 .menu-box .accepted-suggestions {
   margin: 0px 0px 0.3em !important;
@@ -755,4 +728,10 @@
 .suggestItem .xTooltip {
   left: 4px;
   margin: 1.4em 0 0;
+}
+
+#attribution {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
 }

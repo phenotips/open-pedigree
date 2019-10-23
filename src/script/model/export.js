@@ -81,7 +81,6 @@ PedigreeExport.internalToJSONPropertyMapping = {
   'proband':       'proband',
   'fName':         'firstName',
   'lName':         'lastName',
-  'lNameAtB':      'lastNameAtBirth',
   'comments':      'comments',
   'twinGroup':     'twinGroup',
   'monozygotic':   'monozygotic',

@@ -465,10 +465,7 @@ var AbstractHoverbox = Class.create({
      * @param {Number} orbY The y coordinate of the orb
      * @return {Raphael.st} Raphael set of elements that make up the handle
      */
-  generateHandle: function(type, startX, startY, orbX, orbY, title, orbShapeGender, toHide) {
-    if (!orbShapeGender) {
-      orbShapeGender = 'F';
-    }
+  generateHandle: function(type, startX, startY, orbX, orbY, title, toHide) {
     var strokeWidth = editor.getWorkspace().getSizeNormalizedToDefaultZoom(PedigreeEditorParameters.attributes.handleStrokeWidth);
     var path = [['M', startX, startY],['L', orbX, orbY]];
     var connection   = editor.getPaper().path(path).attr({'stroke-width': strokeWidth, stroke: 'gray'}).toBack();
@@ -479,14 +476,12 @@ var AbstractHoverbox = Class.create({
     var orbRadius     = touchPresent ? PedigreeEditorParameters.attributes.touchOrbRadius : PedigreeEditorParameters.attributes.orbRadius;
     var orbHue        = PedigreeEditorParameters.attributes.orbHue;
 
-    var normalOrbAttr   = (orbShapeGender != 'F') ? {fill: '0-hsb(' + orbHue + ', 1, .75)-hsb(' + orbHue + ', .5, .25)', stroke: '#555', 'stroke-width': '0.75'}
-      : {fill: 'r(.5,.9)hsb(' + orbHue + ', 1, .75)-hsb(' + orbHue + ', .5, .25)', stroke: 'none'};
-    var selectedOrbAttr = (orbShapeGender != 'F') ? {fill: '0-hsb(' + (orbHue + .36) + ', 1, .75)-hsb(' + (orbHue + .36) + ', .5, .25)'}
-      : {fill: 'r(.5,.9)hsb(' + (orbHue + .36) + ', 1, .75)-hsb(' + (orbHue + .36) + ', .5, .25)'};
-    var orbAttrX        = (orbShapeGender != 'F') ? 'x' : 'cx';
-    var orbAttrY        = (orbShapeGender != 'F') ? 'y' : 'cy';
+    var normalOrbAttr   = {fill: 'r(.5,.9)hsb(' + orbHue + ', 1, .75)-hsb(' + orbHue + ', .5, .25)', stroke: 'none'};
+    var selectedOrbAttr = {fill: 'r(.5,.9)hsb(' + (orbHue + .36) + ', 1, .75)-hsb(' + (orbHue + .36) + ', .5, .25)'};
+    var orbAttrX        = 'cx';
+    var orbAttrY        = 'cy';
 
-    var orb = generateOrb(editor.getPaper(), orbX, orbY, orbRadius*1.1, orbShapeGender).attr('cursor', 'pointer');
+    var orb = generateOrb(editor.getPaper(), orbX, orbY, orbRadius*1.1).attr('cursor', 'pointer');
     orb[0].attr(normalOrbAttr);
 
     var handle  = editor.getPaper().set().push(connection, orb);
@@ -595,7 +590,7 @@ var AbstractHoverbox = Class.create({
             orb.transform('');
             orb.attr(orbAttrX, orb.ox);
             orb.attr(orbAttrY, orb.oy);
-            orb.transform(orb.ot); 
+            orb.transform(orb.ot);
           });
         }
       }
@@ -739,7 +734,7 @@ var AbstractHoverbox = Class.create({
     this._justClosedMenu = true;
     var me = this;
     setTimeout(function() {
-      me._justClosedMenu = false; 
+      me._justClosedMenu = false;
     }, 100);
 
     if (this._hidden) {

@@ -1,3 +1,4 @@
+import Raphael from 'pedigree/raphael';
 import { isInt } from 'pedigree/model/helpers';
 import Disorder from 'pedigree/disorder';
 import Legend from 'pedigree/view/legend';
@@ -13,7 +14,7 @@ import Legend from 'pedigree/view/legend';
 var DisorgerLegend = Class.create( Legend, {
 
   initialize: function($super) {
-    $super('Disorders', true);
+    $super('Disorders');
 
     this._disorderCache = {};
 
@@ -41,7 +42,7 @@ var DisorgerLegend = Class.create( Legend, {
     }
     if (!this._disorderCache.hasOwnProperty(disorderID)) {
       var whenNameIsLoaded = function() {
-        this._updateDisorderName(disorderID); 
+        this._updateDisorderName(disorderID);
       };
       this._disorderCache[disorderID] = new Disorder(disorderID, null, whenNameIsLoaded.bind(this));
     }
@@ -93,26 +94,6 @@ var DisorgerLegend = Class.create( Legend, {
     }
 
     return $super(disorderID, name);
-  },
-
-  /**
-     * Callback for dragging an object from the legend onto nodes
-     *
-     * @method _onDropGeneric
-     * @param {Person} Person node
-     * @param {String|Number} id ID of the disorder being dropped
-     */
-  _onDropObject: function(node, disorderID) {
-    var currentDisorders = node.getDisorders().slice(0);
-    if (currentDisorders.indexOf(disorderID) == -1) {   // only if the node does not have this disorder yet
-      currentDisorders.push(disorderID);
-      editor.getView().unmarkAll();
-      var properties = { 'setDisorders': currentDisorders };
-      var event = { 'nodeID': node.getID(), 'properties': properties };
-      document.fire('pedigree:node:setproperty', event);
-    } else {
-      alert('This person already has the specified disorder');
-    }
   },
 
   /**

@@ -8,8 +8,6 @@ import PedigreeEditorParameters from 'pedigree/pedigreeEditorParameters';
  * @constructor
  */
 
-// TODO: undo/redo in all handlers
-
 var Controller = Class.create({
   initialize: function() {
     document.observe('pedigree:graph:clear',               this.handleClearGraph);
@@ -174,18 +172,6 @@ var Controller = Class.create({
         }
 
         changedValue = true;
-
-        if (propertySetFunction == 'setLastName') {
-          if (PedigreeEditorParameters.attributes.propagateLastName) {
-            if (node.getGender(nodeID) == 'M') {
-              if (propValue != '') {
-                // propagate last name as "last name at birth" to all descendants (by the male line)
-                Controller._propagateLastNameAtBirth(nodeID, propValue, oldValue);
-                undoEvent = null; // there is no easy undo other than just remember the previous graph state
-              }
-            }
-          }
-        }
 
         if (propertySetFunction == 'setGender') {
           if (node.getMonozygotic()) {
@@ -525,25 +511,6 @@ Controller._validatePropertyValue = function( nodeID, propertySetFunction, propV
     return possibleGenders[propValue];
   }
   return true;
-};
-
-Controller._propagateLastNameAtBirth = function( parentID, parentLastName, changeIfEqualTo ) {
-  var children = editor.getGraph().getAllChildren(parentID);
-
-  for (var i = 0; i < children.length; i++) {
-    var childID   = children[i];
-    var childNode = editor.getView().getNode(childID);
-
-    if (childNode.getLastName() == '' &&
-            (childNode.getLastNameAtBirth() == '' || childNode.getLastNameAtBirth() == changeIfEqualTo)) {
-      childNode.setLastNameAtBirth(parentLastName);
-      var allProperties = childNode.getProperties();
-      editor.getGraph().setProperties( childID, allProperties );
-      if (childNode.getGender() == 'M') {
-        Controller._propagateLastNameAtBirth(childID, parentLastName, changeIfEqualTo);
-      }
-    }
-  }
 };
 
 export default Controller;

@@ -1,3 +1,4 @@
+import Raphael from 'pedigree/raphael';
 import Helpers from 'pedigree/model/helpers';
 import AbstractNodeVisuals, { ChildlessBehaviorVisuals} from 'pedigree/view/abstractNodeVisuals';
 import { drawCornerCurve, findXInterceptGivenLineAndY } from 'pedigree/view/graphicHelpers';

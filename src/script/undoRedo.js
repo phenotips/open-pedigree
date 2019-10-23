@@ -145,10 +145,6 @@ var ActionStack = Class.create({
             event2.memo.properties.hasOwnProperty('setLastName') ) {
       return true;
     }
-    if (event1.memo.properties.hasOwnProperty('setLastNameAtBirth') &&
-            event2.memo.properties.hasOwnProperty('setLastNameAtBirth') ) {
-      return true;
-    }
     if (event1.memo.properties.hasOwnProperty('setComments') &&
             event2.memo.properties.hasOwnProperty('setComments') ) {
       return true;

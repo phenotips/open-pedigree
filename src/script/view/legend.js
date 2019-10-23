@@ -9,7 +9,7 @@ import Helpers from 'pedigree/model/helpers';
 
 var Legend = Class.create( {
 
-  initialize: function(title, allowDrop) {
+  initialize: function(title) {
     this._affectedNodes  = {};     // for each object: the list of affected person nodes
 
     this._objectColors = {};       // for each object: the corresponding object color
@@ -36,10 +36,6 @@ var Legend = Class.create( {
     Element.observe(this._legendBox, 'mouseout', function() {
       $$('.menu-box').invoke('setOpacity', 1);
     });
-
-    if (allowDrop) {
-      Droppables.add(editor.getWorkspace().canvas, {accept: 'drop-'+this._getPrefix(), onDrop: this._onDropWrapper.bind(this)});
-    }
   },
 
   /**
@@ -155,7 +151,7 @@ var Legend = Class.create( {
      */
   _generateElement: function(id, name) {
     var color = this.getObjectColor(id);
-    var item = new Element('li', {'class' : 'disorder '+'drop-'+this._getPrefix(), 'id' : this._getPrefix() + '-' + id}).update(new Element('span', {'class' : 'disorder-name'}).update(name));
+    var item = new Element('li', {'class' : 'disorder', 'id' : this._getPrefix() + '-' + id}).update(new Element('span', {'class' : 'disorder-name'}).update(name));
     var bubble = new Element('span', {'class' : 'disorder-color'});
     bubble.style.backgroundColor = color;
     item.insert({'top' : bubble});
@@ -179,57 +175,7 @@ var Legend = Class.create( {
         node && node.getGraphics().unHighlight();
       });
     });
-    new Draggable(item, {
-      revert: true,
-      reverteffect: function(segment) {
-        // Reset the in-line style.
-        segment.setStyle({
-          height: '',
-          left: '',
-          position: '',
-          top: '',
-          zIndex: '',
-          width: ''
-        });
-      },
-      ghosting: true
-    });
     return item;
-  },
-
-  /**
-     * Callback for dragging an object from the legend onto nodes. Converts canvas coordinates
-     * to nodeID and calls the actual drop holder once the grunt UI work is done.
-     *
-     * @method _onDropWrapper
-     * @param {HTMLElement} [label]
-     * @param {HTMLElement} [target]
-     * @param {Event} [event]
-     * @private
-     */
-  _onDropWrapper: function(label, target, event) {
-    if (editor.isReadOnlyMode()) {
-      return;
-    }
-    var divPos = editor.getWorkspace().viewportToDiv(event.pointerX(), event.pointerY());
-    var pos    = editor.getWorkspace().divToCanvas(divPos.x,divPos.y);
-    var node   = editor.getView().getPersonNodeNear(pos.x, pos.y);
-    //console.log("Position x: " + pos.x + " position y: " + pos.y);
-    if (node) {
-      var id = label.id.substring( label.id.indexOf('-') + 1 );
-      this._onDropObject(node, id);
-    }
-  },
-
-  /**
-     * Callback for dragging an object from the legend onto nodes
-     *
-     * @method _onDropGeneric
-     * @param {Person} Person node
-     * @param {String|Number} id ID of the object
-     */
-  _onDropObject: function(node, objectID) {
-    throw 'drop functionality is not defined';
   }
 });
 

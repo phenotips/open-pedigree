@@ -30,10 +30,6 @@ var PersonGroupHoverbox = Class.create(PersonHoverbox, {
     if (this._currentHandles !== null) {
       return;
     }
-
-    if (PedigreeEditorParameters.attributes.newHandles) {
-      // TODO: singling handle for person groups?
-    }
     // else: no handles
   },
 

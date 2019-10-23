@@ -113,32 +113,13 @@ function sector(canvas, xPosition, yPosition, radius, gender, startAngle, endAng
  * @param {Number} x X coordinate for the orb
  * @param {Number} y Y coordinate for the orb
  * @param {Number} r Radius of the orb
- * @param {Number} hue Hue value between 0 and 1
  * @return {Raphael.st}
  */
-function generateOrb (canvas, x, y, r, gender) {
-  if (!gender || gender == 'F') {
-    return canvas.set(
-      canvas.ellipse(x, y, r, r),
-      canvas.ellipse(x, y, r - r / 5, r - r / 20).attr({stroke: 'none', fill: 'r(.5,.1)#ccc-#ccc', opacity: 0})
-    );
-  }
-
-  if (gender == 'M') {
-    var rr = r - 1;
-    return canvas.set(
-      canvas.rect(x-rr, y-rr, rr*2, rr*2, 0),
-      canvas.rect(x-rr, y-rr, rr*2, rr*2, 1).attr({stroke: 'none', fill: '330-#ccc-#ccc', opacity: 0})
-    );
-  }
-
-  if (gender == 'U') {
-    var rr = (r-1) * 0.9;
-    return canvas.set(
-      canvas.rect(x-rr, y-rr, rr*2, rr*2, 0).attr({transform: 'r45'}),
-      canvas.rect(x-rr, y-rr, rr*2, rr*2, 1).attr({stroke: 'none', fill: '330-#ccc-#ccc', opacity: 0}).attr({transform: 'r45'})
-    );
-  }
+function generateOrb (canvas, x, y, r) {
+  return canvas.set(
+    canvas.ellipse(x, y, r, r),
+    canvas.ellipse(x, y, r - r / 5, r - r / 20).attr({stroke: 'none', fill: 'r(.5,.1)#ccc-#ccc', opacity: 0})
+  );
 }
 
 /**
@@ -213,71 +194,6 @@ function findXInterceptGivenLineAndY(crossY, x1, y1, x2, y2) {
 function getElementHalfHeight(t) {
   return Math.floor(t.getBBox().height/2);
 }
-
-/**
- * Joins all the subsets into one set and returns it.
- * @return {Raphael.st}
- */
-Raphael.st.flatten = function () {
-  var flattenedSet = new Raphael.st.constructor();
-  this.forEach(function(element) {
-    flattenedSet = flattenedSet.concat(element.flatten());
-  });
-  return flattenedSet;
-};
-
-/**
- * Returns set containing the given element
- * @return {Raphael.st}
- */
-Raphael.el.flatten = function () {
-  return this.paper.set(this);
-};
-
-/**
- * Returns a set containing the elements of this set and the given set. Doesn't modify the original sets.
- * @param {Raphael.st} set
- * @return {Raphael.st}
- */
-Raphael.st.concat = function (set) {
-  var newSet = this.copy();
-  if(typeof(set.forEach) == 'function') {
-    set.forEach(function(element) {
-      newSet.push(element);
-    });
-  } else {
-    newSet.push(set);
-  }
-  return newSet;
-};
-
-/**
- * Returns True if this set contains target. Target has to be directly in this set, and not in a subset.
- *
- * @param {Raphael.st|Raphael.el} target
- * @return {boolean}
- */
-Raphael.st.contains = function (target) {
-  var found = false;
-  this.forEach(function(element) {
-    if(element == target) {
-      found = true;
-    }
-  });
-  return found;
-};
-
-/**
- * Returns a new set containing the same elements as this set
- * @return {Raphael.st}
- */
-Raphael.st.copy = function() {
-  var newSet = new Raphael.st.constructor();
-  this.forEach(function(element) {
-    newSet.push(element);
-  });
-  return newSet;
-};
 
 //Animation helpers
 window.requestAnimFrame = (function(){

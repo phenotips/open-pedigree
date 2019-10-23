@@ -358,25 +358,11 @@ var PedigreeEditor = Class.create({
         'function' : 'setLastName'
       },
       {
-        'name' : 'last_name_birth',
-        'label': 'Last name at birth',
-        'type' : 'text',
-        'tab': 'Personal',
-        'function' : 'setLastNameAtBirth'
-      },
-      {
         'name' : 'external_id',
-        'label': 'External ID',
+        'label': 'Identifier',
         'type' : 'text',
         'tab': 'Personal',
         'function' : 'setExternalID'
-      },
-      {
-        'name' : 'ethnicity',
-        'label' : 'Ethnicities',
-        'type' : 'ethnicity-picker',
-        'tab': 'Personal',
-        'function' : 'setEthnicities'
       },
       {
         'name' : 'carrier',
@@ -401,24 +387,24 @@ var PedigreeEditor = Class.create({
       },
       {
         'name' : 'disorders',
-        'label' : 'Known disorders of this individual',
+        'label' : 'Disorders',
         'type' : 'disease-picker',
         'tab': 'Clinical',
         'function' : 'setDisorders'
       },
       {
-        'name' : 'hpo_positive',
-        'label' : 'Clinical symptoms: observed phenotypes',
-        'type' : 'hpo-picker',
-        'tab': 'Clinical',
-        'function' : 'setHPO'
-      },
-      {
         'name' : 'candidate_genes',
-        'label' : 'Genotype information: candidate genes',
+        'label' : 'Genes',
         'type' : 'gene-picker',
         'tab': 'Clinical',
         'function' : 'setGenes'
+      },
+      {
+        'name' : 'hpo_positive',
+        'label' : 'Phenotypic features',
+        'type' : 'hpo-picker',
+        'tab': 'Clinical',
+        'function' : 'setHPO'
       },
       {
         'name' : 'date_of_birth',
@@ -435,15 +421,6 @@ var PedigreeEditor = Class.create({
         'tab': 'Personal',
         'format' : 'dd/MM/yyyy',
         'function' : 'setDeathDate'
-      },
-      {
-        'name' : 'gestation_age',
-        'label' : 'Gestation age',
-        'type' : 'select',
-        'tab': 'Personal',
-        'range' : {'start': 0, 'end': 50, 'item' : ['week', 'weeks']},
-        'nullValue' : true,
-        'function' : 'setGestationAge'
       },
       {
         'name' : 'state',
@@ -463,6 +440,15 @@ var PedigreeEditor = Class.create({
         'function' : 'setLifeStatus'
       },
       {
+        'name' : 'gestation_age',
+        'label' : 'Gestation age',
+        'type' : 'select',
+        'tab': 'Personal',
+        'range' : {'start': 0, 'end': 50, 'item' : ['week', 'weeks']},
+        'nullValue' : true,
+        'function' : 'setGestationAge'
+      },
+      {
         'label' : 'Heredity options',
         'name' : 'childlessSelect',
         'values' : [{'actual': 'none', displayed: 'None'},{'actual': 'childless', displayed: 'Childless'},{'actual': 'infertile', displayed: 'Infertile'}],
@@ -472,7 +458,7 @@ var PedigreeEditor = Class.create({
       },
       {
         'name' : 'adopted',
-        'label' : 'Adopted in',
+        'label' : 'Adopted',
         'type' : 'checkbox',
         'tab': 'Personal',
         'function' : 'setAdopted'
@@ -558,15 +544,9 @@ var PedigreeEditor = Class.create({
       },
       {
         'name' : 'external_ids',
-        'label': 'External ID(s)',
+        'label': 'Identifier(s)',
         'type' : 'text',
         'function' : 'setExternalID'
-      },
-      {
-        'name' : 'ethnicity',
-        'label' : 'Ethnicities<br>(common to all individuals in the group)',
-        'type' : 'ethnicity-picker',
-        'function' : 'setEthnicities'
       },
       {
         'name' : 'disorders',
@@ -602,7 +582,7 @@ var PedigreeEditor = Class.create({
       },
       {
         'name' : 'adopted',
-        'label' : 'Adopted in',
+        'label' : 'Adopted',
         'type' : 'checkbox',
         'function' : 'setAdopted'
       }

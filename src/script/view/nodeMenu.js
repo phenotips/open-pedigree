@@ -158,46 +158,6 @@ var NodeMenu = Class.create({
         });
       }
     });
-    // ethnicities
-    this.form.select('input.suggest-ethnicity').each(function(item) {
-      if (!item.hasClassName('initialized')) {
-        var ethnicityServiceURL = new XWiki.Document('EthnicitySearch', 'PhenoTips').getURL('get', 'outputSyntax=plain');
-        //console.log("Ethnicity URL: " + ethnicityServiceURL);
-        item._suggest = new PhenoTips.widgets.Suggest(item, {
-          script: ethnicityServiceURL + '&json=true&',
-          varname: 'input',
-          noresults: 'No matching terms',
-          resultsParameter : 'rows',
-          json: true,
-          resultId : 'id',
-          resultValue : 'ethnicity',
-          resultInfo : {},
-          enableHierarchy: false,
-          fadeOnClear : false,
-          timeout : 30000,
-          parentContainer : $('body')
-        });
-        if (item.hasClassName('multi') && typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
-          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
-            'showKey' : false,
-            'showTooltip' : false,
-            'showDeleteTool' : true,
-            'enableSort' : false,
-            'showClearTool' : true,
-            'inputType': 'hidden',
-            'listInsertionElt' : 'input',
-            'listInsertionPosition' : 'after',
-            'acceptFreeText' : true
-          });
-        }
-        item.addClassName('initialized');
-        document.observe('ms:suggest:containerCreated', function(event) {
-          if (event.memo && event.memo.suggest === item._suggest) {
-            item._suggest.container.setStyle({'overflow': 'auto', 'maxHeight': document.viewport.getHeight() - item._suggest.container.cumulativeOffset().top + 'px'});
-          }
-        });
-      }
-    });
     // genes
     this.form.select('input.suggest-genes').each(function(item) {
       if (!item.hasClassName('initialized')) {
@@ -414,7 +374,7 @@ var NodeMenu = Class.create({
         var radioButton = new Element('input', {type: 'radio', name: data.name, value: v.actual});
         radioLabel.insert({'top': radioButton});
         radioButton._getValue = function() {
-          return [this.value]; 
+          return [this.value];
         }.bind(radioButton);
         values.insert(radioLabel);
         _this._attachFieldEventListeners(radioButton, ['click']);
@@ -442,7 +402,7 @@ var NodeMenu = Class.create({
       result.inputsContainer.insert(text);
       text.wrap('span');
       text._getValue = function() {
-        return [this.value]; 
+        return [this.value];
       }.bind(text);
       //this._attachFieldEventListeners(text, ['keypress', 'keyup'], [true]);
       this._attachFieldEventListeners(text, ['keyup'], [true]);
@@ -456,7 +416,7 @@ var NodeMenu = Class.create({
       result.inputsContainer.insert(text);
       //text.wrap('span');
       text._getValue = function() {
-        return [this.value]; 
+        return [this.value];
       }.bind(text);
       this._attachFieldEventListeners(text, ['keyup'], [true]);
       return result;
@@ -466,7 +426,7 @@ var NodeMenu = Class.create({
       var datePicker = new Element('input', {type: 'text', 'class': 'xwiki-date', name: data.name, 'title': data.format, alt : '' });
       result.insert(datePicker);
       datePicker._getValue = function() {
-        return [this.alt && Date.parseISO_8601(this.alt)]; 
+        return [this.alt && Date.parseISO_8601(this.alt)];
       }.bind(datePicker);
       this._attachFieldEventListeners(datePicker, ['xwiki:date:changed']);
       return result;
@@ -494,31 +454,6 @@ var NodeMenu = Class.create({
         }
       });
       this._attachFieldEventListeners(diseasePicker, ['custom:selection:changed']);
-      return result;
-    },
-    'ethnicity-picker' : function (data) {
-      var result = this._generateEmptyField(data);
-      var ethnicityPicker = new Element('input', {type: 'text', 'class': 'suggest multi suggest-ethnicity', name: data.name});
-      result.insert(ethnicityPicker);
-      ethnicityPicker._getValue = function() {
-        var results = [];
-        var container = this.up('.field-box');
-        if (container) {
-          container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
-            results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
-          });
-        }
-        return [results];
-      }.bind(ethnicityPicker);
-      // Forward the 'custom:selection:changed' to the input
-      var _this = this;
-      document.observe('custom:selection:changed', function(event) {
-        if (event.memo && event.memo.fieldName == data.name && event.memo.trigger && event.findElement() != event.memo.trigger && !event.memo.trigger._silent) {
-          Event.fire(event.memo.trigger, 'custom:selection:changed');
-          _this.reposition();
-        }
-      });
-      this._attachFieldEventListeners(ethnicityPicker, ['custom:selection:changed']);
       return result;
     },
     'hpo-picker' : function (data) {
@@ -591,7 +526,7 @@ var NodeMenu = Class.create({
         });
       }
       select._getValue = function() {
-        return [(this.selectedIndex >= 0) && this.options[this.selectedIndex].value || '']; 
+        return [(this.selectedIndex >= 0) && this.options[this.selectedIndex].value || ''];
       }.bind(select);
       this._attachFieldEventListeners(select, ['change']);
       return result;
@@ -763,20 +698,6 @@ var NodeMenu = Class.create({
         target._silent = false;
       }
     },
-    'ethnicity-picker' : function (container, values) {
-      var _this = this;
-      var target = container.down('input[type=text].suggest-ethnicity');
-      if (target && target._suggestPicker) {
-        target._silent = true;
-        target._suggestPicker.clearAcceptedList();
-        if (values) {
-          values.each(function(v) {
-            target._suggestPicker.addItem(v, v, '');
-          });
-        }
-        target._silent = false;
-      }
-    },
     'hpo-picker' : function (container, values) {
       var _this = this;
       var target = container.down('input[type=text].suggest-hpo');
@@ -864,9 +785,6 @@ var NodeMenu = Class.create({
     'disease-picker' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
     },
-    'ethnicity-picker' : function (container, inactive) {
-      this._toggleFieldVisibility(container, inactive);
-    },
     'hpo-picker' : function (container, inactive) {
       this._toggleFieldVisibility(container, inactive);
     },
@@ -916,9 +834,6 @@ var NodeMenu = Class.create({
       // FIXME: Not implemented
     },
     'disease-picker' : function (container, inactive) {
-      // FIXME: Not implemented
-    },
-    'ethnicity-picker' : function (container, inactive) {
       // FIXME: Not implemented
     },
     'hpo-picker' : function (container, inactive) {

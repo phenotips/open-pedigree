@@ -53,7 +53,6 @@ var Person = Class.create(AbstractPerson, {
     this._carrierStatus = '';
     this._disorders = [];
     this._hpo = [];
-    this._ethnicities = [];
     this._candidateGenes = [];
     this._twinGroup = null;
     this._monozygotic = false;
@@ -148,29 +147,6 @@ var Person = Class.create(AbstractPerson, {
   setExternalID: function(externalID) {
     this._externalID = externalID;
     this.getGraphics().updateExternalIDLabel();
-  },
-
-  /**
-     * Returns the last name at birth of this Person
-     *
-     * @method getLastNameAtBirth
-     * @return {String}
-     */
-  getLastNameAtBirth: function() {
-    return this._lastNameAtBirth;
-  },
-
-  /**
-     * Replaces the last name at birth of this Person with the given name, and updates the label
-     *
-     * @method setLastNameAtBirth
-     * @param lastNameAtBirth
-     */
-  setLastNameAtBirth: function(lastNameAtBirth) {
-    lastNameAtBirth && (lastNameAtBirth = lastNameAtBirth.charAt(0).toUpperCase() + lastNameAtBirth.slice(1));
-    this._lastNameAtBirth = lastNameAtBirth;
-    this.getGraphics().updateNameLabel();
-    return lastNameAtBirth;
   },
 
   /**
@@ -679,26 +655,6 @@ var Person = Class.create(AbstractPerson, {
   },
 
   /**
-     * Sets the list of ethnicities of this person to the given list
-     *
-     * @method setEthnicities
-     * @param {Array} ethnicities List of ethnicity names (as strings)
-     */
-  setEthnicities: function(ethnicities) {
-    this._ethnicities = ethnicities;
-  },
-
-  /**
-     * Returns a list of ethnicities of this person.
-     *
-     * @method getEthnicities
-     * @return {Array} List of ethnicity names.
-     */
-  getEthnicities: function() {
-    return this._ethnicities;
-  },
-
-  /**
      * Adds gene to the list of this node's candidate genes
      *
      * @method addGenes
@@ -860,13 +816,11 @@ var Person = Class.create(AbstractPerson, {
       identifier:    {value : this.getID()},
       first_name:    {value : this.getFirstName()},
       last_name:     {value : this.getLastName()},
-      last_name_birth: {value: this.getLastNameAtBirth()}, //, inactive: (this.getGender() != 'F')},
       external_id:   {value : this.getExternalID()},
       gender:        {value : this.getGender(), inactive: inactiveGenders},
       date_of_birth: {value : this.getBirthDate(), inactive: this.isFetus()},
       carrier:       {value : this.getCarrierStatus(), disabled: inactiveCarriers},
       disorders:     {value : disorders},
-      ethnicity:     {value : this.getEthnicities()},
       candidate_genes: {value : this.getGenes()},
       adopted:       {value : this.isAdopted(), inactive: cantChangeAdopted},
       state:         {value : this.getLifeStatus(), inactive: inactiveStates},
@@ -902,9 +856,6 @@ var Person = Class.create(AbstractPerson, {
     if (this.getLastName() != '') {
       info['lName'] = this.getLastName();
     }
-    if (this.getLastNameAtBirth() != '') {
-      info['lNameAtB'] = this.getLastNameAtBirth();
-    }
     if (this.getExternalID() != '') {
       info['externalID'] = this.getExternalID();
     }
@@ -931,9 +882,6 @@ var Person = Class.create(AbstractPerson, {
     }
     if (this.getHPO().length > 0) {
       info['hpoTerms'] = this.getHPOForExport();
-    }
-    if (this.getEthnicities().length > 0) {
-      info['ethnicities'] = this.getEthnicities();
     }
     if (this.getGenes().length > 0) {
       info['candidateGenes'] = this.getGenes();
@@ -973,9 +921,6 @@ var Person = Class.create(AbstractPerson, {
       if(info.lName && this.getLastName() != info.lName) {
         this.setLastName(info.lName);
       }
-      if(info.lNameAtB && this.getLastNameAtBirth() != info.lNameAtB) {
-        this.setLastNameAtBirth(info.lNameAtB);
-      }
       if (info.externalID && this.getExternalID() != info.externalID) {
         this.setExternalID(info.externalID);
       }
@@ -987,9 +932,6 @@ var Person = Class.create(AbstractPerson, {
       }
       if(info.hpoTerms) {
         this.setHPO(info.hpoTerms);
-      }
-      if(info.ethnicities) {
-        this.setEthnicities(info.ethnicities);
       }
       if(info.candidateGenes) {
         this.setGenes(info.candidateGenes);

@@ -2,18 +2,15 @@ var PedigreeEditorParameters = {};
 
 //attributes for graphical elements in the editor
 PedigreeEditorParameters.attributes = {
-  propagateLastName: false,
   radius: 40,
   orbRadius: 6,
   touchOrbRadius: 8,
   personHoverBoxRadius: 90,
-  newHandles: true,
   personHandleLength: 75,
   personHandleBreakX: 55,
   personHandleBreakY: 53,
   personSiblingHandleLengthX: 65,
   personSiblingHandleLengthY: 30,
-  enableHandleHintImages: false,
   handleStrokeWidth: 5,
   groupNodesScale: 0.85,
   childlessLength: 14,

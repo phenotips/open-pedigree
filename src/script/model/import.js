@@ -865,14 +865,6 @@ PedigreeImport.initFromGEDCOM = function(inputText, markEvaluated, saveIDAsExter
           if (lastName != '') {
             properties['lName'] = lastName;
           }
-        } else if (property == '_MAIDEN') {
-          var nameParts = getFirstValue(nextPerson[property]).split('/');
-          var firstName = nameParts[0].replace(/^\s+|\s+$/g, '');
-          var lastName  = nameParts.length > 1 ? nameParts[1].replace(/^\s+|\s+$/g, '') : '';
-          properties['lNameAtB'] = firstName;
-          if (lastName != '') {
-            properties['lNameAtB'] += ' ' + lastName;
-          }
         } else if (property == '_GENSTAT') {
           var props = getFirstValue(nextPerson[property]).split('');
           for (var p = 0; p < props.length; p++) {
@@ -1004,7 +996,6 @@ PedigreeImport.initFromGEDCOM = function(inputText, markEvaluated, saveIDAsExter
 PedigreeImport.JSONToInternalPropertyMapping = {
   'proband':         'proband',
   'lastname':        'lName',
-  'lastnameatbirth': 'lNameAtB',
   'comments':        'comments',
   'twingroup':       'twinGroup',
   'monozygotic':     'monozygotic',
