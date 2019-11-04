@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://repository-images.githubusercontent.com/212736090/a7480a00-fa98-11e9-9398-b61d36cd1d4f" width="400px" alt="Open Pedigree logo"/>
+  <img src="https://repository-images.githubusercontent.com/212736090/2759df80-fe9e-11e9-8fa0-8237e35cbaf7" width="400px" alt="Open Pedigree logo"/>
 </p>
 
 <p align="center">
