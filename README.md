@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://repository-images.githubusercontent.com/212736090/a7480a00-fa98-11e9-9398-b61d36cd1d4f" width="100%" style="max-width:400px;" alt="Open Pedigree logo"/>
+  <img src="https://repository-images.githubusercontent.com/212736090/a7480a00-fa98-11e9-9398-b61d36cd1d4f" width="400px" alt="Open Pedigree logo"/>
 </p>
 
 <p align="center">
@@ -7,7 +7,7 @@
     <img src="https://img.shields.io/badge/made%20with-love-E760A4.svg" alt="Made with love">
   </a>
   <a href="https://opensource.org/licenses/LGPL-2.1" target="_blank">
-    <img src="https://img.shields.io/badge/license-LGPL-2.1-blue.svg" alt="LGPL-2.1">
+    <img src="https://img.shields.io/badge/license-LGPL--2.1-blue.svg" alt="LGPL-2.1">
   </a>
 </p>
 
@@ -20,9 +20,13 @@ Open Pedigree is a robust browser-based genomic pedigree drawing solution using 
 ## Features
 
 ✔ Robust support for complext families, intergenerational linkages, and consanguinity
+
 ✔ Shade nodes with disorders and/or candidate genes
+
 ✔ Quickly start with family templates
+
 ✔ Automatic consanguinity detection
+
 ✔ Import from PED, LINKAGE, GEDCOM (Cyrillic), or BOADICEA
 
 
@@ -36,6 +40,7 @@ npm install
 npm start
 ```
 Open a browser to http://localhost:9000/
+
 
 
 ## Contributing
