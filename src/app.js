@@ -8,6 +8,7 @@ import '../public/vendor/phenotips/Widgets.css';
 import '../public/vendor/phenotips/DateTimePicker.css';
 import '../public/vendor/phenotips/Skin.css';
 import '../public/vendor/FontAwesomeIcons.css';
+import '../public/vendor/selectize/selectize.default.css';
 
 var editor;
 

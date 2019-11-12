@@ -638,6 +638,10 @@ var Person = Class.create(AbstractPerson, {
      * @param {Array} hpos List of HPOTerm objects
      */
   setHPO: function(hpos) {
+    if (!Array.isArray(hpos)) {
+      console.log('Warning: trying to setHPO with non-array: ', hpos);
+      return;
+    }
     for(var i = this.getHPO().length-1; i >= 0; i--) {
       this.removeHPO( this.getHPO()[i] );
     }
