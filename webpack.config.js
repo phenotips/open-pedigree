@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   entry: './src/app.js',
@@ -14,8 +13,8 @@ module.exports = {
   externals: [
     'XWiki', // XWiki JS library
     'Class', // PrototypeJS
-    '$super',
     'Prototype',
+    '$$',
     '$',
     '$F',
   ],
@@ -61,20 +60,24 @@ module.exports = {
     port: 9000
   },
 
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: {
+          mangle: {
+            reserved: ['$super'],
+          },
+        },
+      }),
+    ],
+  },
+
+
   resolve: {
   	alias: {
       'pedigree': path.resolve(__dirname, 'src/script/'),
       'vendor': path.resolve(__dirname, 'public/vendor/'),
   	}
-  },
-
-  plugins: [
-    // new HtmlWebpackPlugin({
-    //   template: 'index.html',
-    // }),
-    // new webpack.ProvidePlugin({
-      // Raphael: 'pedigree/raphael',
-      // XWiki: 'pedigree/xwiki',
-    // })
-  ],
+  }
 };

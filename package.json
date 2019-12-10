@@ -26,6 +26,7 @@
   "devDependencies": {
     "@babel/core": "^7.6.3",
     "@babel/preset-env": "^7.6.3",
+    "@fortawesome/fontawesome-free": "^5.11.2",
     "babel-loader": "^8.0.6",
     "css-loader": "^3.2.0",
     "eslint": "^5.0.0",
@@ -35,6 +36,7 @@
     "raphael": "^2.3.0",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
+    "terser-webpack-plugin": "^2.2.2",
     "webpack": "^4.10.2",
     "webpack-cli": "^3.3.9",
     "webpack-dev-server": "^3.1.10"
