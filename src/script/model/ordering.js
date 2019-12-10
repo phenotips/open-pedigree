@@ -199,7 +199,7 @@ Ordering.prototype = {
     var vorders = this.vOrder;
     var result = v_list.slice(0);
     result.sort(function(x, y){
-      return vorders[x] > vorders[y]; 
+      return vorders[x] - vorders[y];
     });
     return result;
   },
