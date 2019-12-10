@@ -172,7 +172,7 @@ var Workspace = Class.create({
         name : 'input',
         items: [
           { key : 'templates', label : 'Templates', icon : 'copy'},
-          { key : 'import',    label : 'Import', icon : 'upload'}
+          { key : 'import',    label : 'Import', icon : 'file-import'}
         ]
       }, {
         name : 'edit',
