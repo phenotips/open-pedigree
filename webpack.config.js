@@ -45,15 +45,17 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|svg|jpg|gif|eot|woff2?|ttf)$/,
-        use: [
-          'file-loader',
-        ]
+        test: /\.(png|svg|jpg|gif)$/,
+        use: [{
+         loader: 'file-loader',
+         options: {
+           outputPath: 'assets',
+           publicPath: 'dist/assets',
+         }
+       }]
       }
     ]
   },
-
-  devtool: 'inline-source-map', // 'cheap-module-eval-source-map',
 
   devServer: {
     contentBase: path.join(__dirname, '.'),
@@ -72,7 +74,6 @@ module.exports = {
       }),
     ],
   },
-
 
   resolve: {
   	alias: {
