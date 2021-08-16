@@ -37,6 +37,8 @@ var PedigreeEditor = Class.create({
     // URL to load patient data from and save data to
     var patientDataUrl = options.patientDataUrl || '';
     var backend = options.backend || {};
+    var enableAutosave = options.autosave || false;
+
     if (backend.save === undefined || typeof backend.save !== 'function') {
       console.error('No "save" function provided for backend');
     }
@@ -77,6 +79,7 @@ var PedigreeEditor = Class.create({
 
     this._controller = new Controller();
 
+    
     //attach actions to buttons on the top bar
     var undoButton = $('action-undo');
     undoButton && undoButton.on('click', function(event) {
@@ -115,6 +118,9 @@ var PedigreeEditor = Class.create({
 
     var closeButton = $('action-close');
     closeButton && closeButton.on('click', function(event) {
+      if (autosave) {
+        editor.getSaveLoadEngine().save(patientDataUrl);
+      }
       if (returnUrl) {
         window.location = returnUrl;
       }
@@ -128,6 +134,29 @@ var PedigreeEditor = Class.create({
                   'Chrome, Safari v4+, Opera v10.5+ and most mobile browsers.');
     });
 
+    if (enableAutosave) {
+      const autosave = this.autosave(patientDataUrl);
+      document.observe('pedigree:graph:clear',               autosave);
+      document.observe('pedigree:undo',                      autosave);
+      document.observe('pedigree:redo',                      autosave);
+      document.observe('pedigree:node:remove',               autosave);
+      document.observe('pedigree:node:setproperty',          autosave);
+      document.observe('pedigree:node:modify',               autosave);
+      document.observe('pedigree:person:drag:newparent',     autosave);
+      document.observe('pedigree:person:drag:newpartner',    autosave);
+      document.observe('pedigree:person:drag:newsibling',    autosave);
+      document.observe('pedigree:person:newparent',          autosave);
+      document.observe('pedigree:person:newsibling',         autosave);
+      document.observe('pedigree:person:newpartnerandchild', autosave);
+      document.observe('pedigree:partnership:newchild',      autosave);
+    }
+
+  },
+
+  autosave: function(patientDataUrl) {
+    return () => {
+      editor.getSaveLoadEngine().save(patientDataUrl);
+    };
   },
 
   /**
