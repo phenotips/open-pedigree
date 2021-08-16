@@ -31,10 +31,20 @@ var PedigreeEditor = Class.create({
   initialize: function(options) {
     options = options || {};
 
+    // front end configurations
+    var returnUrl = options.returnUrl || 'https://github.com/phenotips/open-pedigree';
+    
     // URL to load patient data from and save data to
     var patientDataUrl = options.patientDataUrl || '';
-    // URL to redirect the browser to on cancel/close
-    var returnUrl = options.returnUrl || 'https://github.com/phenotips/open-pedigree';
+    var backend = options.backend || {};
+    if (backend.save === undefined || typeof backend.save !== 'function') {
+      console.error('No "save" function provided for backend');
+    }
+    if (backend.load === undefined || typeof backend.save !== 'function') {
+      console.error('No "load" function provided for backend');
+    }
+
+    // debugging functionality
     this.DEBUG_MODE = Boolean(options.DEBUG_MODE);
 
     window.editor = this;
@@ -60,7 +70,7 @@ var PedigreeEditor = Class.create({
     this._importSelector = new ImportSelector();
     this._exportSelector = new ExportSelector();
     this._versionUpdater = new VersionUpdater();
-    this._saveLoadEngine = new SaveLoadEngine();
+    this._saveLoadEngine = new SaveLoadEngine(backend);
 
     // load proband data and load the graph after proband data is available
     this._saveLoadEngine.load(patientDataUrl, this._saveLoadEngine);
