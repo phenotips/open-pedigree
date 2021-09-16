@@ -24,21 +24,21 @@
   "homepage": "https://github.com/phenotips/open-pedigree#readme",
   "dependencies": {},
   "devDependencies": {
-    "@babel/core": "^7.6.3",
-    "@babel/preset-env": "^7.6.3",
-    "@fortawesome/fontawesome-free": "^5.11.2",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.2.0",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@fortawesome/fontawesome-free": "^5.15.4",
+    "babel-loader": "^8.2.2",
+    "css-loader": "^3.6.0",
     "eslint": "^5.0.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "raphael": "^2.3.0",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
-    "terser-webpack-plugin": "^2.2.2",
-    "webpack": "^4.10.2",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.1.10"
+    "terser-webpack-plugin": "^2.3.8",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.2"
   }
 }

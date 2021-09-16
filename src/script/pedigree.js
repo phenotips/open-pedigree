@@ -31,10 +31,22 @@ var PedigreeEditor = Class.create({
   initialize: function(options) {
     options = options || {};
 
+    // front end configurations
+    var returnUrl = options.returnUrl || 'https://github.com/phenotips/open-pedigree';
+    
     // URL to load patient data from and save data to
     var patientDataUrl = options.patientDataUrl || '';
-    // URL to redirect the browser to on cancel/close
-    var returnUrl = options.returnUrl || 'https://github.com/phenotips/open-pedigree';
+    var backend = options.backend || {};
+    var enableAutosave = options.autosave || false;
+
+    if (backend.save === undefined || typeof backend.save !== 'function') {
+      console.error('No "save" function provided for backend');
+    }
+    if (backend.load === undefined || typeof backend.save !== 'function') {
+      console.error('No "load" function provided for backend');
+    }
+
+    // debugging functionality
     this.DEBUG_MODE = Boolean(options.DEBUG_MODE);
 
     window.editor = this;
@@ -60,13 +72,14 @@ var PedigreeEditor = Class.create({
     this._importSelector = new ImportSelector();
     this._exportSelector = new ExportSelector();
     this._versionUpdater = new VersionUpdater();
-    this._saveLoadEngine = new SaveLoadEngine();
+    this._saveLoadEngine = new SaveLoadEngine(backend);
 
     // load proband data and load the graph after proband data is available
     this._saveLoadEngine.load(patientDataUrl, this._saveLoadEngine);
 
     this._controller = new Controller();
 
+    
     //attach actions to buttons on the top bar
     var undoButton = $('action-undo');
     undoButton && undoButton.on('click', function(event) {
@@ -105,6 +118,9 @@ var PedigreeEditor = Class.create({
 
     var closeButton = $('action-close');
     closeButton && closeButton.on('click', function(event) {
+      if (autosave) {
+        editor.getSaveLoadEngine().save(patientDataUrl);
+      }
       if (returnUrl) {
         window.location = returnUrl;
       }
@@ -118,6 +134,29 @@ var PedigreeEditor = Class.create({
                   'Chrome, Safari v4+, Opera v10.5+ and most mobile browsers.');
     });
 
+    if (enableAutosave) {
+      const autosave = this.autosave(patientDataUrl);
+      document.observe('pedigree:graph:clear',               autosave);
+      document.observe('pedigree:undo',                      autosave);
+      document.observe('pedigree:redo',                      autosave);
+      document.observe('pedigree:node:remove',               autosave);
+      document.observe('pedigree:node:setproperty',          autosave);
+      document.observe('pedigree:node:modify',               autosave);
+      document.observe('pedigree:person:drag:newparent',     autosave);
+      document.observe('pedigree:person:drag:newpartner',    autosave);
+      document.observe('pedigree:person:drag:newsibling',    autosave);
+      document.observe('pedigree:person:newparent',          autosave);
+      document.observe('pedigree:person:newsibling',         autosave);
+      document.observe('pedigree:person:newpartnerandchild', autosave);
+      document.observe('pedigree:partnership:newchild',      autosave);
+    }
+
+  },
+
+  autosave: function(patientDataUrl) {
+    return () => {
+      editor.getSaveLoadEngine().save(patientDataUrl);
+    };
   },
 
   /**
