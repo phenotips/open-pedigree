@@ -22,7 +22,9 @@
     "url": "https://github.com/phenotips/open-pedigree/issues"
   },
   "homepage": "https://github.com/phenotips/open-pedigree#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@auth0/auth0-spa-js": "auth0/auth0-spa-js"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
