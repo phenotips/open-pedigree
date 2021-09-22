@@ -118,7 +118,7 @@ var PedigreeEditor = Class.create({
 
     var closeButton = $('action-close');
     closeButton && closeButton.on('click', function(event) {
-      if (autosave) {
+      if (enableAutosave) {
         editor.getSaveLoadEngine().save(patientDataUrl);
       }
       if (returnUrl) {
