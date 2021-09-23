@@ -13,8 +13,6 @@ import '../public/vendor/phenotips/Widgets.css';
 import '../public/vendor/phenotips/DateTimePicker.css';
 import '../public/vendor/phenotips/Skin.css';
 
-console.log();
-
 document.observe('dom:loaded', async function () {
   let auth0 = null;
 
@@ -63,6 +61,7 @@ document.observe('dom:loaded', async function () {
   const urlParams = new URLSearchParams(window.location.search);
   
   const editor = new PedigreeEditor({
+    returnUrl: 'javascript:history.go(-2)',
     autosave: true,
     backend: {
       load: async ({ onSuccess, onError }) => {
