@@ -96,13 +96,17 @@ document.observe('dom:loaded', async function () {
             $phenopacketId: uuid!,
             $rawData: jsonb!
           ) {
-            update_open_pedigree_data(
-              where: { phenopacket_id: {_eq: $phenopacketId} },
-              _set: {
-                raw_data: $rawData
+            insert_family_one(
+              object: {
+                phenopacket_id: $phenopacketId,
+                raw_open_pedigree_data: $rawData
+              },
+              on_conflict: {
+                constraint: family_phenopacket_id_key,
+                update_columns: raw_open_pedigree_data
               }
             ) {
-              affected_rows
+              id
             }
           }
         `;
