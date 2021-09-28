@@ -22,7 +22,6 @@
     "url": "https://github.com/phenotips/open-pedigree/issues"
   },
   "homepage": "https://github.com/phenotips/open-pedigree#readme",
-  "dependencies": {},
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
