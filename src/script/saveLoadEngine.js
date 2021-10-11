@@ -34,6 +34,21 @@ function getSelectorFromXML(responseXML, selectorName, attributeName, attributeV
   }
 }
 
+/**
+ * Process the Canvas element to return SVG data.
+ * 
+ * @param {DOMElement} element 
+ */
+function canvasToSvg(element) {
+  var bbox = element.down().getBBox();
+  
+  return element.innerHTML
+    .replace(/xmlns:xlink=".*?"/, '')
+    .replace(/width=".*?"/, '')
+    .replace(/height=".*?"/, '')
+    .replace(/viewBox=".*?"/, 'viewBox="' + bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height + '" width="' + bbox.width + '" height="' + bbox.height + '" xmlns:xlink="http://www.w3.org/1999/xlink"');
+}
+
 function getSubSelectorTextFromXML(responseXML, selectorName, attributeName, attributeValue, subselectorName) {
   var selector = getSelectorFromXML(responseXML, selectorName, attributeName, attributeValue);
 
@@ -198,13 +213,12 @@ var SaveLoadEngine = Class.create( {
     var backgroundPosition = background.nextSibling;
     var backgroundParent =  background.parentNode;
     backgroundParent.removeChild(background);
-    var bbox = image.down().getBBox();
     
     this._saveFunction({
       patientDataUrl: patientDataUrl,
       jsonData: jsonData,
       setSaveInProgress: this.setSaveInProgress,
-      svgData: image.innerHTML.replace(/xmlns:xlink=".*?"/, '').replace(/width=".*?"/, '').replace(/height=".*?"/, '').replace(/viewBox=".*?"/, 'viewBox="' + bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height + '" width="' + bbox.width + '" height="' + bbox.height + '" xmlns:xlink="http://www.w3.org/1999/xlink"')
+      svgData: canvasToSvg(image)
     });
     backgroundParent.insertBefore(background, backgroundPosition);
   },
