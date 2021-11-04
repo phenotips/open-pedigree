@@ -1,9 +1,14 @@
 const webpack = require('webpack');
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 module.exports = {
   entry: './src/app.js',
+
+  plugins: [
+    new Dotenv()
+  ],
 
   output: {
     filename: 'pedigree.min.js',
@@ -55,6 +60,10 @@ module.exports = {
        }]
       }
     ]
+  },
+
+  node: {
+    fs: 'empty'
   },
 
   devServer: {

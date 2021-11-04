@@ -23,13 +23,16 @@
     "url": "https://github.com/phenotips/open-pedigree/issues"
   },
   "homepage": "https://github.com/phenotips/open-pedigree#readme",
-  "dependencies": {},
+  "dependencies": {
+    "@auth0/auth0-spa-js": "auth0/auth0-spa-js"
+  },
   "devDependencies": {
     "@babel/core": "^7.15.0",
     "@babel/preset-env": "^7.15.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "babel-loader": "^8.2.2",
     "css-loader": "^3.6.0",
+    "dotenv-webpack": "^7.0.3",
     "eslint": "^5.0.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
