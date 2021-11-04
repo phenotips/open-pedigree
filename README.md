@@ -6,7 +6,6 @@
   <a href="https://opensource.org/licenses/LGPL-2.1" target="_blank">
     <img src="https://img.shields.io/badge/license-LGPL--2.1-blue.svg" alt="LGPL-2.1">
   </a>
-  <img src="https://img.shields.io/badge/made%20in-canada-red.svg" alt="Made with love">
 </p>
 
 
