@@ -100,6 +100,58 @@ function getSubSelectorTextFromXML(responseXML, selectorName, attributeName, att
   return value;
 }
 
+/**
+ * Escapes a string for use in a regular expression.  Taken from MDN:
+ * 
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+ * 
+ * @param {String} string 
+ * @returns 
+ */
+function escapeRegExp(string) {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+/**
+ * Uses native browser functionalty to encode HTML entities within a string.
+ * 
+ * @param {String} string 
+ * @returns 
+ */
+function encodeHTMLEntities(string) {
+  let el = document.createElement('div');
+  el.textContent = string;
+  return el.innerHTML;
+}
+
+/**
+ * Converts a URI into a value which can be used in a regular expression
+ * 
+ * @param {String} uri 
+ * @returns 
+ */
+function uriAsRegex(uri) {
+  return escapeRegExp(
+    encodeHTMLEntities(uri)
+  );
+}
+
+/**
+ * Process the Canvas element to return SVG data.
+ * 
+ * @param {DOMElement} element 
+ */
+function canvasToSvg(element) {
+  var bbox = element.down().getBBox();
+
+  return element.innerHTML
+    .replace(/xmlns:xlink=".*?"/, '')
+    .replace(/width=".*?"/, '')
+    .replace(/height=".*?"/, '')
+    .replace(/viewBox=".*?"/, 'viewBox="' + bbox.x + ' ' + bbox.y + ' ' + bbox.width + ' ' + bbox.height + '" width="' + bbox.width + '" height="' + bbox.height + '" xmlns:xlink="http://www.w3.org/1999/xlink"')
+    .replaceAll(new RegExp(uriAsRegex(window.location.href), 'g'), '');
+}
+
 var SaveLoadEngine = Class.create( {
   _defaultSaveFunction: function(args) {
     var me = this;
