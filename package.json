@@ -8,6 +8,14 @@
     "start": "webpack-dev-server --mode=development --output-public-path=dist --watch",
     "start-docker": "webpack-dev-server --mode=production --output-public-path=dist --host=0.0.0.0"
   },
+  "devServer": {
+    "compress": true,
+    "allowedHosts": [
+      "localhost",
+      "0.0.0.0",
+      ".appdomain.cloud"
+    ]
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/phenotips/open-pedigree.git"
