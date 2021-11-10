@@ -31,6 +31,8 @@ Open Pedigree is a robust browser-based genomic pedigree drawing solution using 
 
 ## Getting started
 
+### Command line
+
 Quickly get started with open pedigree on your computer:
 ```
 git clone git@github.com:phenotips/open-pedigree.git
@@ -40,7 +42,16 @@ npm start
 ```
 Open a browser to http://localhost:9000/
 
+### Docker
 
+You can also use the supplied Docker image to run the applicarion.  To get started:
+
+```
+git clone git@github.com:phenotips/open-pedigree.git
+cd open-pedigree
+docker build . -t open-pedigree
+docker run -p 9000:9000 -d open-pedigree
+```
 
 ## Contributing
 
