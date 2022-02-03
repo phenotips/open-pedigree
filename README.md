@@ -6,7 +6,6 @@
   <a href="https://opensource.org/licenses/LGPL-2.1" target="_blank">
     <img src="https://img.shields.io/badge/license-LGPL--2.1-blue.svg" alt="LGPL-2.1">
   </a>
-  <img src="https://img.shields.io/badge/made%20in-canada-red.svg" alt="Made with love">
 </p>
 
 
@@ -32,6 +31,8 @@ Open Pedigree is a robust browser-based genomic pedigree drawing solution using 
 
 ## Getting started
 
+### Command line
+
 Quickly get started with open pedigree on your computer:
 ```
 git clone git@github.com:phenotips/open-pedigree.git
@@ -41,7 +42,16 @@ npm start
 ```
 Open a browser to http://localhost:9000/
 
+### Docker
 
+You can also use the supplied Docker image to run the applicarion.  To get started:
+
+```
+git clone git@github.com:phenotips/open-pedigree.git
+cd open-pedigree
+docker build . -t open-pedigree
+docker run -p 9000:9000 -d open-pedigree
+```
 
 ## Contributing
 
