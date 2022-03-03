@@ -26,6 +26,7 @@ var ExportSelector = Class.create( {
     };
     var typeListElement = new Element('table');
     typeListElement.insert(_addTypeOption(true,  'PED', 'ped'));
+    typeListElement.insert(_addTypeOption(false,  'GA4GH FHIR', 'GA4GH'));
     typeListElement.insert(_addTypeOption(false,  'SVG', 'svg'));
     typeListElement.insert(_addTypeOption(false,  'PDF', 'pdf'));
 
@@ -165,7 +166,12 @@ var ExportSelector = Class.create( {
       saveTextAs(exportString, fileName);
     } else {
       var privacySetting = $$('input:checked[type=radio][name="privacy-options"]')[0].value;
-      if (exportType == 'svg') {
+      if (exportType == 'GA4GH') {
+        var exportString = PedigreeExport.exportAsGA4GH(editor.getGraph().DG, privacySetting);
+        var fileName = 'open-pedigree-GA4GH-fhir.json';
+        var mimeType = 'application/fhir+json';
+        saveTextAs(exportString, fileName);
+      } else if (exportType == 'svg') {
         var exportString = PedigreeExport.exportAsSVG(editor.getGraph().DG, privacySetting);
         var fileName = 'open-pedigree.svg';
         var mimeType = 'image/svg+xml';

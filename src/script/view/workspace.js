@@ -29,8 +29,7 @@ var Workspace = Class.create({
     this.background.node.setAttribute('class', 'panning-background');
 
     this.workArea.insert(new Element('div', {'id': 'attribution'})
-      .insert('&copy; 2019 ')
-      .insert(new Element('a', {'href': 'https://gene42.com'}).update('Gene42 Inc.')));
+      .insert('&copy; 2019-2022 Gene42 Inc.'));
 
     this.adjustSizeToScreen = this.adjustSizeToScreen.bind(this);
     Event.observe (window, 'resize', me.adjustSizeToScreen);
@@ -213,7 +212,7 @@ var Workspace = Class.create({
 
     menu.insert(new Element('div', {'class': 'powered-by'})
       .insert('Powered by ')
-      .insert(new Element('a', {'href': 'https://phenotips.org/'})
+      .insert(new Element('a', {'href': 'https://phenotips.com/'})
         .update('PhenoTips')
         .insert(new Element('sup').update('&reg;'))));
   },

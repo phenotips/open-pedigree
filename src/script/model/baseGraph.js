@@ -832,15 +832,109 @@ BaseGraph.prototype = {
 
       var inEdges = this.getInEdges(nextV);
       for (var j = 0; j < inEdges.length; j++) {
-        var v = inEdges[j];
-        if ( !ancestors.hasOwnProperty(v) ) {
-          q.push(v);
-          ancestors[v] = true;
+        var vv = inEdges[j];
+        if ( !ancestors.hasOwnProperty(vv) ) {
+          q.push(vv);
+          ancestors[vv] = true;
         }
       }
     }
     return ancestors;
+  },
+
+
+  getMother : function(v) {
+    if (v !== null) {
+      // get parents
+      var parents = this.getParents(v);
+      if (parents.length === 2) {
+        if (this.properties[parents[0]]['gender'] === 'F') {
+          return parents[0];
+        }
+        if (this.properties[parents[0]]['gender'] === 'M') {
+          return parents[1];
+        }
+      }
+      for (var i = 0; i < parents.length; i++) {
+        if (this.properties[parents[i]]['gender'] === 'F') {
+          return parents[i];
+        }
+      }
+    }
+    return null;
+  },
+
+  getFather : function(v) {
+    if (v !== null){
+      // get parents
+      var parents = this.getParents(v);
+      if (parents.length === 2) {
+        if (this.properties[parents[0]]['gender'] === 'M') {
+          return parents[0];
+        }
+        if (this.properties[parents[0]]['gender'] === 'F') {
+          return parents[1];
+        }
+      }
+      for (var i = 0; i < parents.length; i++) {
+        if (this.properties[parents[i]]['gender'] === 'M') {
+          return parents[i];
+        }
+      }
+    }
+    return null;
+  },
+
+
+  getRelationshipNode: function(v1, v2) {
+    if (!this.isPerson(v1) || !this.isPerson(v1)) {
+      throw 'Assertion failed: attempting to get relationship of a non-person';
+    }
+
+    var relationships = this.v[v1];
+
+    for (var r = 0; r < relationships.length; ++r) {
+      var edgeTo       = relationships[r];
+      var relationship = this.downTheChainUntilNonVirtual(edgeTo);
+      var partners = this.getParents(relationship);
+      if (partners[0] === v2 || partners[1] === v2) {
+        return relationship;
+      }
+    }
+    return null;
+  },
+
+  getUniqueParentsFor: function(v){
+    const allParents = new Set();
+    for (let child of v){
+      for (let parent of this.getParents(child)){
+        allParents.add(parent);
+      }
+    }
+    return allParents;
+  },
+
+  getParentGenerations: function(v, generations){
+
+    let immediateParents = this.getUniqueParentsFor([v])
+
+    const allParents = new Set(immediateParents);
+
+    for (let i = 1; i< generations; i++){
+      if (immediateParents.size > 0){
+        immediateParents = this.getUniqueParentsFor(immediateParents);
+        for (let parent of immediateParents){
+          allParents.add(parent);
+        }
+      }
+      else {
+        // no more parents
+        break;
+      }
+    }
+    return allParents;
   }
+
 };
 
 export default BaseGraph;

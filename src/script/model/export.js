@@ -1,6 +1,7 @@
 import PDFDocument from 'vendor/pdfkit/pdfkit.standalone';
 import SVGtoPDF from 'vendor/pdfkit/svg-to-pdfkit';
 import blobStream from 'vendor/pdfkit/blob-stream';
+import GA4GHFHIRConverter from 'pedigree/GA4GHFHIRConverter';
 
 var PedigreeExport = function () {
 };
@@ -78,6 +79,18 @@ PedigreeExport.exportAsPED = function(pedigree, idGenerationPreference) {
   }
 
   return output;
+};
+
+/* ===============================================================================================
+ *
+ * Creates and returns a JSON in the "GA4GH FHIR JSON" format
+ *
+ * ===============================================================================================
+ */
+
+PedigreeExport.exportAsGA4GH = function(pedigree, privacySetting = "all", fhirPatientReference = null,
+  pedigreeImage = null){
+  return GA4GHFHIRConverter.exportAsFHIR(pedigree, privacySetting, fhirPatientReference, pedigreeImage);
 };
 
 // ===============================================================================================
