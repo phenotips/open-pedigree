@@ -9,16 +9,16 @@
 </p>
 
 
-## A free and open-source pedigree tool powered by PhenoTips
+## A free and open-source pedigree tool powered by PhenoTips®
 
-Open Pedigree is a robust browser-based genomic pedigree drawing solution using [Prototype](prototypejs.org), [Raphaël](https://dmitrybaranovskiy.github.io/raphael/), and [PhenoTips](https://phenotips.org).
+Open Pedigree is a robust browser-based genomic pedigree drawing solution using [Prototype](prototypejs.org), [Raphaël](https://dmitrybaranovskiy.github.io/raphael/), and [PhenoTips](https://phenotips.com).
 
 <img width="983" alt="image" src="https://user-images.githubusercontent.com/4251264/68103796-e1048080-fe9d-11e9-9353-6b491aae588d.png">
 
 
 ## Features
 
-✔ Robust support for complext families, intergenerational linkages, and consanguinity
+✔ Robust support for complex families, intergenerational linkages, and consanguinity
 
 ✔ Shade nodes with disorders and/or candidate genes
 
@@ -26,7 +26,7 @@ Open Pedigree is a robust browser-based genomic pedigree drawing solution using 
 
 ✔ Automatic consanguinity detection
 
-✔ Import from PED, LINKAGE, GEDCOM (Cyrillic), or BOADICEA
+✔ Import from PED, LINKAGE, GEDCOM (Cyrillic), BOADICEA, or GA4GH Pedigree (FHIR)
 
 
 ## Getting started
@@ -64,16 +64,16 @@ In order to ensure that the licensing is clear and stays open, you'll be asked t
 
 This is free software! Create an issue in GitHub to ask others for help, or try fixing the issue yourself and then make a pull request to contribute it back to the core.
 
-For commercial support or for information about the paid Enterprise version, please contact [Gene42](https://gene42.com/).
+If you are interested in the Enterprise/commercial version, please contact [PhenoTips](https://phenotips.com/).
 
 
 ## License
 
-Copyright (c) 2019 Gene42 Inc.
+Copyright (c) 2019-2022 Gene42 Inc. o/a PhenoTips
 
 Open Pedigree is distributed under the [LGPL-2.1](https://opensource.org/licenses/LGPL-2.1) (GNU Lesser General Public License).
 
 You can easily comply with this license by:
-* including prominent notice of the use of Open Pedigree in your software that uses it
+* including prominent notice of the use of Open Pedigree in your software
 * retaining all copyright notices in the software
-* ensuring that any and all changes you make to the software are disclosed and open-sourced under the LGPL
+* ensuring that any and all changes you make to the software are published and open-sourced under the LGPL
