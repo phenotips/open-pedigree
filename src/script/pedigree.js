@@ -15,6 +15,7 @@ import TemplateSelector from 'pedigree/view/templateSelector';
 import ActionStack from 'pedigree/undoRedo';
 import VersionUpdater from 'pedigree/versionUpdater';
 import PedigreeEditorParameters from 'pedigree/pedigreeEditorParameters';
+import DefaultFhirTerminologyHelper from 'pedigree/DefaultFhirTerminologyHelper';
 
 import '../style/editor.css';
 
@@ -64,6 +65,7 @@ var PedigreeEditor = Class.create({
     this._disorderLegend = new DisorderLegend();
     this._geneLegend = new GeneLegend();
     this._hpoLegend = new HPOLegend();
+    this._fhirTerminologyHelper = options.fhirTerminologyHelper || new DefaultFhirTerminologyHelper();
 
     this._view = new View();
 
@@ -255,6 +257,10 @@ var PedigreeEditor = Class.create({
      */
   getGeneLegend: function() {
     return this._geneLegend;
+  },
+
+  getFhirTerminologyHelper: function() {
+    return this._fhirTerminologyHelper;
   },
 
   /**
