@@ -5,6 +5,7 @@
   "main": "src/app.js",
   "scripts": {
     "build": "webpack -p",
+    "test": "node_modules/.bin/eslint --quiet src/**/*.js",
     "start": "webpack-dev-server --mode=development --output-public-path=dist --watch",
     "start-docker": "webpack-dev-server --mode=production --output-public-path=dist --host=0.0.0.0"
   },

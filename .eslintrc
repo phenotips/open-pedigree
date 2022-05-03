@@ -23,7 +23,11 @@
         "quotes": [ "warn", "single" ],
         "semi": [ "warn", "always" ],
         "no-console": "off",
+        "no-constant-condition": "warn",
+        "no-empty": "warn",
+        "no-inner-declarations": "warn",
         "no-redeclare": "warn",
-        "no-unused-vars": [ "warn", { "args": "none" } ]
+        "no-unused-vars": [ "warn", { "args": "none" } ],
+        "no-useless-escape": "warn"
     }
 }
