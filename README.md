@@ -3,6 +3,9 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/phenotips/open-pedigree/actions/workflows/ci.yml">
+    <img src="https://github.com/phenotips/open-pedigree/actions/workflows/ci.yml/badge.svg?branch=master" alt="Build status">
+  </a>
   <a href="https://opensource.org/licenses/LGPL-2.1" target="_blank">
     <img src="https://img.shields.io/badge/license-LGPL--2.1-blue.svg" alt="LGPL-2.1">
   </a>
