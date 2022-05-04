@@ -118,6 +118,8 @@ var ExportSelector = Class.create( {
       var exportString = PedigreeExport.exportAsPED(editor.getGraph().DG, idGenerationSetting);
       var fileName = 'open-pedigree.ped';
       var mimeType = 'text/plain';
+      // Uses FileSaver global
+      /* eslint-disable no-undef */
       saveTextAs(exportString, fileName);
     } else {
       var privacySetting = $$('input:checked[type=radio][name="privacy-options"]')[0].value;
@@ -125,6 +127,8 @@ var ExportSelector = Class.create( {
         var exportString = PedigreeExport.exportAsGA4GH(editor.getGraph().DG, privacySetting);
         var fileName = 'open-pedigree-GA4GH-fhir.json';
         var mimeType = 'application/fhir+json';
+        // Uses FileSaver global
+        /* eslint-disable no-undef */
         saveTextAs(exportString, fileName);
       }
     }
