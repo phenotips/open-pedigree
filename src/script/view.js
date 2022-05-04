@@ -90,7 +90,6 @@ var View = Class.create({
   getNode: function(nodeId) {
     if (!this._nodeMap.hasOwnProperty(nodeId)) {
       throw 'ERROR';
-      return null;
     }
     return this._nodeMap[nodeId];
   },

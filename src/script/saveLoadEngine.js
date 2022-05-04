@@ -103,7 +103,7 @@ var SaveLoadEngine = Class.create( {
   _defaultSaveFunction: function(args) {
     var me = this;
 
-    new Ajax.Request(patientDataUrl, {
+    new Ajax.Request(args.patientDataUrl, {
       method: 'POST',
       onCreate: function() {
         args.setSaveInProgress(true);
