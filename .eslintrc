@@ -26,6 +26,7 @@
         "no-constant-condition": "warn",
         "no-empty": "warn",
         "no-inner-declarations": "warn",
+        "no-prototype-builtins": "warn",
         "no-redeclare": "warn",
         "no-unused-vars": [ "warn", { "args": "none" } ],
         "no-useless-escape": "warn"
