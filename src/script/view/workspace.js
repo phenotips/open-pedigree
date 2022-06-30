@@ -84,10 +84,9 @@ var Workspace = Class.create({
         } // Mozilla
 
         if (delta > 0) {
-          var x = $$('.zoom-out')[0];
-          $$('.zoom-out')[0].click();
+          me.__zoom['out'].click();
         } else {
-          $$('.zoom-in')[0].click();
+          me.__zoom['in'].click();
         }
       };
 
