@@ -1,22 +1,18 @@
 import Raphael from 'pedigree/raphael';
-import { isInt } from 'pedigree/model/helpers';
-import Disorder from 'pedigree/disorder';
 import Legend from 'pedigree/view/legend';
 
 /**
  * Class responsible for keeping track of disorders and their properties, and for
- * caching disorders data as loaded from the OMIM database.
+ * caching disorders data as loaded from the terminology.
  * This information is graphically displayed in a 'Legend' box.
  *
  * @class DisorderLegend
  * @constructor
  */
-var DisorgerLegend = Class.create( Legend, {
+const DisorderLegend = Class.create(Legend, {
 
-  initialize: function($super) {
-    $super('Disorders');
-
-    this._disorderCache = {};
+  initialize: function ($super, terminology) {
+    $super('Disorders', terminology);
 
     this._specialDisordersRegexps = [new RegExp('^1BrCa', 'i'),
       new RegExp('^2BrCa', 'i'),
@@ -30,52 +26,14 @@ var DisorgerLegend = Class.create( Legend, {
   },
 
   /**
-     * Returns the disorder object with the given ID. If object is not in cache yet
-     * returns a newly created one which may have the disorder name & other attributes not loaded yet
-     *
-     * @method getDisorder
-     * @return {Object}
-     */
-  getDisorder: function(disorderID) {
-    if (!isInt(disorderID)) {
-      disorderID = Disorder.sanitizeID(disorderID);
-    }
-    if (!this._disorderCache.hasOwnProperty(disorderID)) {
-      var whenNameIsLoaded = function() {
-        this._updateDisorderName(disorderID);
-      };
-      this._disorderCache[disorderID] = new Disorder(disorderID, null, whenNameIsLoaded.bind(this));
-    }
-    return this._disorderCache[disorderID];
-  },
-
-  /**
-     * Registers an occurrence of a disorder. If disorder hasn't been documented yet,
-     * designates a color for it.
-     *
-     * @method addCase
-     * @param {Number|String} disorderID ID for this disorder taken from the OMIM database
-     * @param {String} disorderName The name of the disorder
-     * @param {Number} nodeID ID of the Person who has this disorder
-     */
-  addCase: function($super, disorderID, disorderName, nodeID) {
-    if (!this._disorderCache.hasOwnProperty(disorderID)) {
-      this._disorderCache[disorderID] = new Disorder(disorderID, disorderName);
-    }
-
-    $super(disorderID, disorderName, nodeID);
-  },
-
-  /**
-     * Updates the displayed disorder name for the given disorder
-     *
-     * @method _updateDisorderName
-     * @param {Number} disorderID The identifier of the disorder to update
-     * @private
-     */
-  _updateDisorderName: function(disorderID) {
-    var name = this._legendBox.down('li#' + this._getPrefix() + '-' + disorderID + ' .disorder-name');
-    name.update(this.getDisorder(disorderID).getName());
+   * Returns the disorder object with the given ID. If object is not in cache yet
+   * returns a newly created one which may have the disorder name & other attributes not loaded yet
+   *
+   * @method getDisorder
+   * @return {Object}
+   */
+  getDisorder: function (disorderID) {
+    return this.getTerm(disorderID);
   },
 
   /**
@@ -88,7 +46,7 @@ var DisorgerLegend = Class.create( Legend, {
      */
   _generateElement: function($super, disorderID, name) {
     if (!this._objectColors.hasOwnProperty(disorderID)) {
-      var color = this._generateColor(disorderID);
+      const color = this._generateColor(disorderID);
       this._objectColors[disorderID] = color;
       document.fire('disorder:color', {'id' : disorderID, color: color});
     }
@@ -110,9 +68,9 @@ var DisorgerLegend = Class.create( Legend, {
     }
 
     // check special disorder prefixes
-    for (var i = 0; i < this._specialDisordersRegexps.length; i++) {
+    for (let i = 0; i < this._specialDisordersRegexps.length; i++) {
       if (disorderID.match(this._specialDisordersRegexps[i]) !== null) {
-        for (var disorder in this._objectColors) {
+        for (const disorder in this._objectColors) {
           if (this._objectColors.hasOwnProperty(disorder)) {
             if (disorder.match(this._specialDisordersRegexps[i]) !== null) {
               return this._objectColors[disorder];
@@ -123,7 +81,7 @@ var DisorgerLegend = Class.create( Legend, {
       }
     }
 
-    var usedColors = Object.values(this._objectColors),
+    let usedColors = Object.values(this._objectColors),
       // [red/yellow]           prefColors = ["#FEE090", '#f8ebb7', '#eac080', '#bf6632', '#9a4500', '#a47841', '#c95555', '#ae6c57'];
       // [original yellow/blue] prefColors = ["#FEE090", '#E0F8F8', '#8ebbd6', '#4575B4', '#fca860', '#9a4500', '#81a270'];
       // [green]                prefColors = ['#81a270', '#c4e8c4', '#56a270', '#b3b16f', '#4a775a', '#65caa3'];
@@ -131,7 +89,7 @@ var DisorgerLegend = Class.create( Legend, {
     usedColors.each( function(color) {
       prefColors = prefColors.without(color);
     });
-    if (disorderID == 'affected') {
+    if (disorderID === 'affected') {
       if (usedColors.indexOf('#FEE090') > -1 ) {
         return '#dbad71';
       } else {
@@ -141,8 +99,8 @@ var DisorgerLegend = Class.create( Legend, {
     if(prefColors.length > 0) {
       return prefColors[0];
     } else {
-      var randomColor = Raphael.getColor();
-      while(randomColor == '#ffffff' || usedColors.indexOf(randomColor) != -1) {
+      let randomColor = Raphael.getColor();
+      while(randomColor === '#ffffff' || usedColors.indexOf(randomColor) !== -1) {
         randomColor = '#'+((1<<24)*Math.random()|0).toString(16);
       }
       return randomColor;
@@ -150,4 +108,4 @@ var DisorgerLegend = Class.create( Legend, {
   }
 });
 
-export default DisorgerLegend;
+export default DisorderLegend;

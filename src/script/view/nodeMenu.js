@@ -1,9 +1,3 @@
-import Disorder from 'pedigree/disorder';
-import HPOTerm from 'pedigree/hpoTerm';
-import Helpers from 'pedigree/model/helpers';
-import GraphicHelpers from 'pedigree/view/graphicHelpers';
-import AgeCalc from 'pedigree/view/ageCalc';
-
 /**
  * NodeMenu is a UI Element containing options for AbstractNode elements
  *
@@ -108,13 +102,21 @@ var NodeMenu = Class.create({
     // date
     var crtYear = new Date().getFullYear();
     window.dateTimePicker = new XWiki.widgets.DateTimePicker({
-      year_range: [crtYear - 99, crtYear + 1],
+      year_range: [crtYear - 149, crtYear + 1],
       after_navigate : function(date) {
         this._selector.updateSelectedDate({day: date.getDate(), month: date.getMonth(), year : date.getYear() + 1900}, false);
       }
     });
 
-    var _createSuggest = function(input) {
+    /**
+     *
+     * @param input
+     * @param {Legend} legend
+     * @param selectizeOptions
+     * @returns {*|jQuery|HTMLElement}
+     * @private
+     */
+    var _createSuggest = function(input, termType, selectizeOptions) {
       var jqnode = jQuery(input);
       if (jqnode) {
         jqnode.selectize({
@@ -123,9 +125,23 @@ var NodeMenu = Class.create({
           sortField: 'text',
           persist: true,
           maxItems: null,
-          delimiter: SELECTIZE_DELIMITER
-        }).on('change', function(value) {
-          Event.fire(input, 'xwiki:customchange');
+          delimiter: SELECTIZE_DELIMITER,
+          onChange : () => {
+            for (const v of jqnode[0].selectize.getValue()){
+              const item = jqnode[0].selectize.getItem(v);
+              const name = item.text();
+              editor.getLegend(termType).addToCache(v, name);
+            }
+            Event.fire(input, 'xwiki:customchange');
+          },
+          load: (query, callback) => {
+            if (query.length < 2) return callback();
+            editor.getLegend(termType).searchForTerms(query,
+              (search, result) => callback(result),
+              (err) => callback()
+            );
+          },
+          ...selectizeOptions
         });
       }
       return jqnode;
@@ -134,7 +150,7 @@ var NodeMenu = Class.create({
     // disease
     this.form.select('select.suggest-omim').each(function(item) {
       if (!item.hasClassName('initialized')) {
-        _createSuggest(item);
+        _createSuggest(item, 'disorder');
         item.addClassName('initialized');
       }
     });
@@ -142,15 +158,15 @@ var NodeMenu = Class.create({
     // genes
     this.form.select('select.suggest-genes').each(function(item) {
       if (!item.hasClassName('initialized')) {
-        _createSuggest(item);
+        _createSuggest(item, 'gene');
         item.addClassName('initialized');
       }
     });
 
-    // HPO terms
+    // phenotype terms
     this.form.select('select.suggest-hpo').each(function(item) {
       if (!item.hasClassName('initialized')) {
-        _createSuggest(item);
+        _createSuggest(item, 'phenotype');
         item.addClassName('initialized');
       }
     });
@@ -343,6 +359,7 @@ var NodeMenu = Class.create({
             return [];
           }
         }
+        return [];
       }.bind(diseasePicker);
       this._attachFieldEventListeners(diseasePicker, ['xwiki:customchange']);
       return result;
@@ -361,6 +378,7 @@ var NodeMenu = Class.create({
             return [];
           }
         }
+        return [];
       }.bind(hpoPicker);
       this._attachFieldEventListeners(hpoPicker, ['xwiki:customchange']);
       return result;
@@ -379,6 +397,7 @@ var NodeMenu = Class.create({
             return [];
           }
         }
+        return [];
       }.bind(genePicker);
       this._attachFieldEventListeners(genePicker, ['xwiki:customchange']);
       return result;
@@ -570,8 +589,14 @@ var NodeMenu = Class.create({
             if (value && value.hasOwnProperty("id")) {
               ids.push(value.id);
             }
-          })
+          });
+          target[0].selectize.clearOptions();
+          var currentDisorders = editor.getDisorderLegend().getCurrentTerms();
+          for (var disorder of currentDisorders){
+            target[0].selectize.addOption({'text': disorder.getName(), 'value': disorder.getID()});
+          }
           target[0].selectize.setValue(ids, true);
+          target[0].selectize.refreshOptions(false);
         }
       }
     },
@@ -585,8 +610,14 @@ var NodeMenu = Class.create({
             if (value && value.hasOwnProperty("id")) {
               ids.push(value.id);
             }
-          })
+          });
+          target[0].selectize.clearOptions();
+          var currentPhenotypes = editor.getPhenotypeLegend().getCurrentTerms();
+          for (var phenotype of currentPhenotypes){
+            target[0].selectize.addOption({'text': phenotype.getName(), 'value': phenotype.getID()});
+          }
           target[0].selectize.setValue(ids, true);
+          target[0].selectize.refreshOptions(false);
         }
       }
     },
@@ -595,7 +626,14 @@ var NodeMenu = Class.create({
       if (target && target[0] && target[0].selectize) {
         if (Array.isArray(values)) {
           // Genes are just a straight array of strings
+          target[0].selectize.clearOptions();
+          var currentGenes = editor.getGeneLegend().getCurrentTerms();
+          for (var gene of currentGenes){
+            console.log("Adding options " + gene.getID() + "=>" + gene.getName());
+            target[0].selectize.addOption({'text': gene.getName(), 'value': gene.getID()});
+          }
           target[0].selectize.setValue(values, true);
+          target[0].selectize.refreshOptions(false);
         }
       }
     },

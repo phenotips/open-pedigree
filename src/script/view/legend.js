@@ -6,17 +6,25 @@ import Helpers from 'pedigree/model/helpers';
  * @class Legend
  * @constructor
  */
+const Legend = Class.create({
 
-var Legend = Class.create( {
-
-  initialize: function(title) {
-    this._affectedNodes  = {};     // for each object: the list of affected person nodes
+  /**
+   *
+   * @param {String} title
+   * @param terminology
+   */
+  initialize: function (title, terminology) {
+    this._affectedNodes = {};     // for each object: the list of affected person nodes
 
     this._objectColors = {};       // for each object: the corresponding object color
 
-    var legendContainer = $('legend-container');
-    if (legendContainer == undefined) {
-      var legendContainer = new Element('div', {'class': 'legend-container', 'id': 'legend-container'});
+    this._cache = {};
+    this._terminology = terminology;
+
+    let legendContainer = $('legend-container');
+    if (!legendContainer) {
+      console.debug("Create legend container");
+      legendContainer = new Element('div', {'class': 'legend-container', 'id': 'legend-container'});
       editor.getWorkspace().getWorkArea().insert(legendContainer);
     }
 
@@ -24,17 +32,23 @@ var Legend = Class.create( {
     this._legendBox.hide();
     legendContainer.insert(this._legendBox);
 
-    var legendTitle= new Element('h2', {'class' : 'legend-title'}).update(title);
+    const legendTitle = new Element('h2', {'class': 'legend-title'}).update(title);
     this._legendBox.insert(legendTitle);
 
     this._list = new Element('ul', {'class' : 'disorder-list'});
     this._legendBox.insert(this._list);
 
     Element.observe(this._legendBox, 'mouseover', function() {
-      $$('.menu-box').invoke('setOpacity', .1);
+      const menuBox = $$('.menu-box');
+      if (menuBox){
+        menuBox.invoke('setOpacity', .1);
+      }
     });
     Element.observe(this._legendBox, 'mouseout', function() {
-      $$('.menu-box').invoke('setOpacity', 1);
+      const menuBox = $$('.menu-box');
+      if (menuBox){
+        menuBox.invoke('setOpacity', 1);
+      }
     });
   },
 
@@ -51,6 +65,40 @@ var Legend = Class.create( {
     throw 'prefix not defined';
   },
 
+  /**
+   * Returns the disorder object with the given ID. If object is not in cache yet
+   * returns a newly created one which may have the disorder name & other attributes not loaded yet
+   *
+   * @method getDisorder
+   * @return {Object}
+   */
+  getTerm: function (termId) {
+    const id = this._terminology.sanitizeID(termId);
+    if (!this._cache.hasOwnProperty(id)) {
+      this._cache[id] = this._terminology.createTerm(id, null, () => this._updateTermName(id));
+    }
+    return this._cache[id];
+  },
+
+  _updateTermName: function (id) {
+    const name = this._legendBox.down('li#' + this._getPrefix(id) + '-' + id + ' .disorder-name');
+    name.update(this._cache[id].getName());
+  },
+
+  getCurrentTerms: function () {
+    const currentTerms = [];
+    for (const id in this._affectedNodes) {
+      currentTerms.push(this._cache[id]);
+    }
+    return currentTerms;
+  },
+
+  addToCache: function(termId, name) {
+    const id = this._terminology.sanitizeID(termId);
+    if (!this._cache.hasOwnProperty(id)) {
+      this._cache[id] = this._terminology.createTerm(id, name);
+    }
+  },
   /**
      * Retrieve the color associated with the given object
      *
@@ -81,16 +129,16 @@ var Legend = Class.create( {
      *
      * @method addCase
      * @param {String|Number} id ID of the object
-     * @param {String} Name The description of the object to be displayed
+     * @param {String} name The description of the object to be displayed
      * @param {Number} nodeID ID of the Person who has this object associated with it
      */
   addCase: function(id, name, nodeID) {
-    if(Object.keys(this._affectedNodes).length == 0) {
+    if(Object.keys(this._affectedNodes).length === 0) {
       this._legendBox.show();
     }
     if(!this._hasAffectedNodes(id)) {
       this._affectedNodes[id] = [nodeID];
-      var listElement = this._generateElement(id, name);
+      const listElement = this._generateElement(id, name);
       this._list.insert(listElement);
     } else {
       this._affectedNodes[id].push(nodeID);
@@ -108,12 +156,12 @@ var Legend = Class.create( {
   removeCase: function(id, nodeID) {
     if (this._hasAffectedNodes(id)) {
       this._affectedNodes[id] = this._affectedNodes[id].without(nodeID);
-      if(this._affectedNodes[id].length == 0) {
+      if(this._affectedNodes[id].length === 0) {
         delete this._affectedNodes[id];
         delete this._objectColors[id];
-        var htmlElement = this._getListElementForObjectWithID(id);
+        const htmlElement = this._getListElementForObjectWithID(id);
         htmlElement.remove();
-        if(Object.keys(this._affectedNodes).length == 0) {
+        if(Object.keys(this._affectedNodes).length === 0) {
           this._legendBox.hide();
         }
       } else {
@@ -122,8 +170,12 @@ var Legend = Class.create( {
     }
   },
 
-  _getListElementForObjectWithID: function(id) {
-    return $(this._getPrefix() + '-' + id);
+  searchForTerms: function(searchTerm, onSuccess, onError, onComplete){
+    this._terminology.searchForTerms(searchTerm, onSuccess, onError, onComplete);
+  },
+
+  _getListElementForObjectWithID: function (id) {
+    return $(this._getPrefix(id) + '-' + id);
   },
 
   /**
@@ -134,9 +186,9 @@ var Legend = Class.create( {
      * @private
      */
   _updateCaseNumbersForObject : function(id) {
-    var label = this._legendBox.down('li#' + this._getPrefix() + '-' + id + ' .disorder-cases');
+    const label = this._legendBox.down('li#' + this._getPrefix() + '-' + id + ' .disorder-cases');
     if (label) {
-      var cases = this._affectedNodes.hasOwnProperty(id) ? this._affectedNodes[id].length : 0;
+      const cases = this._affectedNodes.hasOwnProperty(id) ? this._affectedNodes[id].length : 0;
       label.update(cases + '&nbsp;case' + ((cases - 1) && 's' || ''));
     }
   },
@@ -150,20 +202,20 @@ var Legend = Class.create( {
      * @return {HTMLLIElement} List element to be insert in the legend
      */
   _generateElement: function(id, name) {
-    var color = this.getObjectColor(id);
-    var item = new Element('li', {'class' : 'disorder', 'id' : this._getPrefix() + '-' + id}).update(new Element('span', {'class' : 'disorder-name'}).update(name));
-    var bubble = new Element('span', {'class' : 'disorder-color'});
+    const color = this.getObjectColor(id);
+    const item = new Element('li', {'class' : 'disorder', 'id' : this._getPrefix() + '-' + id}).update(new Element('span', {'class' : 'disorder-name'}).update(name));
+    const bubble = new Element('span', {'class' : 'disorder-color'});
     bubble.style.backgroundColor = color;
     item.insert({'top' : bubble});
-    var countLabel = new Element('span', {'class' : 'disorder-cases'});
-    var countLabelContainer = new Element('span', {'class' : 'disorder-cases-container'}).insert('(').insert(countLabel).insert(')');
+    const countLabel = new Element('span', {'class': 'disorder-cases'});
+    const countLabelContainer = new Element('span', {'class': 'disorder-cases-container'}).insert('(').insert(countLabel).insert(')');
     item.insert(' ').insert(countLabelContainer);
-    var me = this;
+    const me = this;
     Element.observe(item, 'mouseover', function() {
       //item.setStyle({'text-decoration':'underline', 'cursor' : 'default'});
       item.down('.disorder-name').setStyle({'background': color, 'cursor' : 'default'});
       me._affectedNodes[id] && me._affectedNodes[id].forEach(function(nodeID) {
-        var node = editor.getNode(nodeID);
+        const node = editor.getNode(nodeID);
         node && node.getGraphics().highlight();
       });
     });
@@ -171,11 +223,18 @@ var Legend = Class.create( {
       //item.setStyle({'text-decoration':'none'});
       item.down('.disorder-name').setStyle({'background':'', 'cursor' : 'default'});
       me._affectedNodes[id] && me._affectedNodes[id].forEach(function(nodeID) {
-        var node = editor.getNode(nodeID);
+        const node = editor.getNode(nodeID);
         node && node.getGraphics().unHighlight();
       });
     });
     return item;
+  },
+
+  desanitizeID: function(id){
+    if (this._terminology){
+      return this._terminology.desanitizeID(id);
+    }
+    return id;
   }
 });
 

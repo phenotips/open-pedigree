@@ -1,5 +1,3 @@
-import Disorder from 'pedigree/disorder';
-import HPOTerm from 'pedigree/hpoTerm';
 import FhirTerminologyHelper from 'pedigree/FhirTerminologyHelper';
 
 /**
@@ -17,37 +15,19 @@ var DefaultFhirTerminologyHelper = Class.create( FhirTerminologyHelper, {
     this._geneCS = geneCS;
   },
 
-  getCodeableConceptFromDisorder: function(disorder) {
-    let cachedDisorder = editor.getDisorderLegend().getDisorder(disorder);
-    if (cachedDisorder.getName() ===  Disorder.desanitizeID(disorder)){
+  _getCodeableConceptFromLegend: function(code, legend, codeSystem) {
+    let cachedTerm = legend.getTerm(code);
+    if (cachedTerm.isUnknown()){
       // code and name are the same
-      return { 'text': disorder };
+      console.log("Unknown term, just use text", cachedTerm);
+      return { 'text': code };
     } else {
-      // disorder from omim
+      // term from terminology
       return  {
         'coding': [
           {
-            'system': this._disorderCS,
-            'code': disorder,
-            'display': cachedDisorder.getName()
-          }
-        ]
-      };
-    }
-  },
-
-  getCodeableConceptFromPhenotype: function(phenotype) {
-    let cachedTerm = editor.getHPOLegend().getTerm(phenotype);
-    if (cachedTerm.getName() ===  HPOTerm.desanitizeID(phenotype)){
-      // code and name are the same
-      return { 'text': phenotype };
-    } else {
-      // disorder from omim
-      return  {
-        'coding': [
-          {
-            'system': this._phenotypeCS,
-            'code': phenotype,
+            'system': codeSystem,
+            'code': code,
             'display': cachedTerm.getName()
           }
         ]
@@ -55,22 +35,18 @@ var DefaultFhirTerminologyHelper = Class.create( FhirTerminologyHelper, {
     }
   },
 
-  getCodeableConceptFromGene: function(gene) {
-    // the genes are not cached like the disorders and phenotypes.
-    // Assume the value is in the code system if we have one.
-    if (this._geneCS){
-      return  {
-        'coding': [
-          {
-            'system': this._geneCS,
-            'code': gene,
-          }
-        ]
-      };
-    }
-    return { 'text': gene };
-
+  getCodeableConceptFromDisorder: function(disorder) {
+    return this._getCodeableConceptFromLegend(disorder, editor.getDisorderLegend(), this._disorderCS);
   },
+
+  getCodeableConceptFromPhenotype: function(phenotype) {
+    return this._getCodeableConceptFromLegend(phenotype, editor.getPhenotypeLegend(), this._phenotypeCS);
+  },
+
+  getCodeableConceptFromGene: function(gene) {
+    return this._getCodeableConceptFromLegend(gene, editor.getGeneLegend(), this._geneCS);
+  },
+
 
   _getCodeFromCodeableConcept: function(codeSystem, codeableConcept, returnNullOnNoMatch ) {
     let foundCode = false;
