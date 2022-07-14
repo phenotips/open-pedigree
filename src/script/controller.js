@@ -162,7 +162,12 @@ var Controller = Class.create({
           undoEvent.memo.properties['setDisorders'] = node.getDisorders().slice(0);
         }
 
+        var field = propertySetFunction.replace(/^set/, '').toLowerCase();
         node[propertySetFunction](propValue);
+        document.fire(`pedigree:person:set:${field}`, {
+          'node': node,
+          'value': propValue,
+        });
 
         if (propertySetFunction == 'setDisorders') {
           var newDisorders = node[propertyGetFunction]();

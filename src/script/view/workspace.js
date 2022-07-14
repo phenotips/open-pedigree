@@ -29,8 +29,7 @@ var Workspace = Class.create({
     this.background.node.setAttribute('class', 'panning-background');
 
     this.workArea.insert(new Element('div', {'id': 'attribution'})
-      .insert('&copy; 2019 ')
-      .insert(new Element('a', {'href': 'https://gene42.com'}).update('Gene42 Inc.')));
+      .insert('&copy; 2019-2022 Gene42 Inc.'));
 
     this.adjustSizeToScreen = this.adjustSizeToScreen.bind(this);
     Event.observe (window, 'resize', me.adjustSizeToScreen);
@@ -85,10 +84,9 @@ var Workspace = Class.create({
         } // Mozilla
 
         if (delta > 0) {
-          var x = $$('.zoom-out')[0];
-          $$('.zoom-out')[0].click();
+          me.__zoom['out'].click();
         } else {
-          $$('.zoom-in')[0].click();
+          me.__zoom['in'].click();
         }
       };
 
@@ -163,8 +161,8 @@ var Workspace = Class.create({
       }, {
         name : 'output',
         items: [
-          { key : 'export',    label : 'Export', icon : 'download'},
-          { key : 'close',     label : 'Close', icon : 'sign-out'}
+          { key : 'export',    label : 'Export', icon : 'file-export'},
+          { key : 'close',     label : 'Close', icon : 'times'}
         ]
       }];
     } else {
@@ -172,13 +170,13 @@ var Workspace = Class.create({
         name : 'input',
         items: [
           { key : 'templates', label : 'Templates', icon : 'copy'},
-          { key : 'import',    label : 'Import', icon : 'upload'}
+          { key : 'import',    label : 'Import', icon : 'file-import'}
         ]
       }, {
         name : 'edit',
         items: [
           { key : 'undo',   label : 'Undo', icon : 'undo'},
-          { key : 'redo',   label : 'Redo', icon : 'repeat'}
+          { key : 'redo',   label : 'Redo', icon : 'redo'}
         ]
       }, {
         name : 'reset',
@@ -188,8 +186,8 @@ var Workspace = Class.create({
       }, {
         name : 'output',
         items: [
-          { key : 'export',    label : 'Export', icon : 'download'},
-          { key : 'close',     label : 'Close', icon : 'sign-out'}
+          { key : 'export',    label : 'Export', icon : 'file-export'},
+          { key : 'close',     label : 'Close', icon : 'times'}
         ]
       }];
     }
@@ -213,7 +211,7 @@ var Workspace = Class.create({
 
     menu.insert(new Element('div', {'class': 'powered-by'})
       .insert('Powered by ')
-      .insert(new Element('a', {'href': 'https://phenotips.org/'})
+      .insert(new Element('a', {'href': 'https://phenotips.com/'})
         .update('PhenoTips')
         .insert(new Element('sup').update('&reg;'))));
   },

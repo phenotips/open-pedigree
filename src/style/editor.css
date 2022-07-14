@@ -628,14 +628,12 @@
 /* The unicode symbols we use for different node types have disproportionate sizes.
    Adjusting the font size for a cleaner look:
 */
-.fa-rotate-45 {
+.rotate-45 {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
-  display: inline-block !important;
-  font-size: 90%;
 }
 .expand-arrow {
   cursor: pointer;
