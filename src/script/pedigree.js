@@ -750,7 +750,7 @@ var PedigreeEditor = Class.create({
       },
       'phenotype': {
         'type' : 'CTSS',
-        'validIdRegex' : /^HP\:(\d)+$/i,
+        'validIdRegex' : /^HP:(\d)+$/i,
         'ctssBaseUrl' : new XWiki.Document('SolrService', 'PhenoTips').getURL('get'),
         'valueColumn' : 'id',
         'textColumn' : 'name'
@@ -765,7 +765,7 @@ var PedigreeEditor = Class.create({
       return options[termType + 'Terminology'];
     }
     let resultTerminology;
-    let termOptions = options.hasOwnProperty(termType + 'Options') ? options[termType + 'Options'] : {...defaultTermOptions[termType]};
+    let termOptions = options.hasOwnProperty(termType + 'Options') ? options[termType + 'Options'] : Object.assign({}, defaultTermOptions[termType]);
     switch (termOptions.type){
     case 'CTSS':
       resultTerminology = new CTSSTerminology(termType,
