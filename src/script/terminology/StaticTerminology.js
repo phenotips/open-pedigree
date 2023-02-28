@@ -55,11 +55,13 @@ const StaticTerminology = Class.create( AbstractTerminology, {
       limit: this._searchCount
     });
     let result = [];
-    for (let ft of foundTerms){
+    for (let ft of foundTerms.items){
       result.push(this._terms[ft.id]);
     }
     onSuccess(searchTerm, result);
-    onComplete();
+    if (onComplete){
+      onComplete();
+    }
   }
 });
 
