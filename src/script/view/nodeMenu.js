@@ -1,9 +1,3 @@
-import Disorder from 'pedigree/disorder';
-import HPOTerm from 'pedigree/hpoTerm';
-import Helpers from 'pedigree/model/helpers';
-import GraphicHelpers from 'pedigree/view/graphicHelpers';
-import AgeCalc from 'pedigree/view/ageCalc';
-
 /**
  * NodeMenu is a UI Element containing options for AbstractNode elements
  *
@@ -27,6 +21,9 @@ import AgeCalc from 'pedigree/view/ageCalc';
  Note: when an item is specified as "inactive" it is completely removed from the menu; when it
        is specified as "disabled" it is greyed-out and does not allow selection, but is still visible.
  */
+
+var SELECTIZE_DELIMITER = '|';
+
 var NodeMenu = Class.create({
   initialize : function(data, tabs, otherCSSClass) {
     this.canvas = editor.getWorkspace().canvas || $('body');
@@ -105,160 +102,72 @@ var NodeMenu = Class.create({
     // date
     var crtYear = new Date().getFullYear();
     window.dateTimePicker = new XWiki.widgets.DateTimePicker({
-      year_range: [crtYear - 99, crtYear + 1],
+      year_range: [crtYear - 149, crtYear + 1],
       after_navigate : function(date) {
         this._selector.updateSelectedDate({day: date.getDate(), month: date.getMonth(), year : date.getYear() + 1900}, false);
       }
     });
+
+    /**
+     *
+     * @param input
+     * @param {Legend} legend
+     * @param selectizeOptions
+     * @returns {*|jQuery|HTMLElement}
+     * @private
+     */
+    var _createSuggest = function(input, termType, selectizeOptions) {
+      var jqnode = jQuery(input);
+      if (jqnode) {
+        jqnode.selectize({
+          options: [],
+          create: true,
+          sortField: 'text',
+          persist: true,
+          maxItems: null,
+          delimiter: SELECTIZE_DELIMITER,
+          onChange : () => {
+            for (const v of jqnode[0].selectize.getValue()){
+              const item = jqnode[0].selectize.getItem(v);
+              const name = item.text();
+              editor.getLegend(termType).addToCache(v, name);
+            }
+            Event.fire(input, 'xwiki:customchange');
+          },
+          load: (query, callback) => {
+            if (query.length < 2) return callback();
+            editor.getLegend(termType).searchForTerms(query,
+              (search, result) => callback(result),
+              (err) => callback()
+            );
+          },
+          ...selectizeOptions
+        });
+      }
+      return jqnode;
+    };
+
     // disease
-    this.form.select('input.suggest-omim').each(function(item) {
+    this.form.select('select.suggest-omim').each(function(item) {
       if (!item.hasClassName('initialized')) {
-        // Create the Suggest.
-        item._suggest = new PhenoTips.widgets.Suggest(item, {
-          script: Disorder.getOMIMServiceURL() + '&',
-          queryProcessor: typeof(PhenoTips.widgets.SolrQueryProcessor) == 'undefined' ? null : new PhenoTips.widgets.SolrQueryProcessor({
-            'name' : {'wordBoost': 20, 'phraseBoost': 40},
-            'nameSpell' : {'wordBoost': 50, 'phraseBoost': 100, 'stubBoost': 20},
-            'keywords' : {'wordBoost': 2, 'phraseBoost': 6, 'stubBoost': 2},
-            'text' : {'wordBoost': 1, 'phraseBoost': 3, 'stubBoost': 1},
-            'textSpell' : {'wordBoost': 2, 'phraseBoost': 5, 'stubBoost': 2, 'stubTrigger': true}
-          }, {
-            '-nameSort': ['\\**', '\\+*', '\\^*']
-          }),
-          varname: 'q',
-          noresults: 'No matching terms',
-          json: true,
-          resultsParameter : 'rows',
-          resultId : 'id',
-          resultValue : 'name',
-          resultInfo : {},
-          enableHierarchy: false,
-          fadeOnClear : false,
-          timeout : 30000,
-          parentContainer : $('body')
-        });
-        if (item.hasClassName('multi') && typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
-          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
-            'showKey' : false,
-            'showTooltip' : false,
-            'showDeleteTool' : true,
-            'enableSort' : false,
-            'showClearTool' : true,
-            'inputType': 'hidden',
-            'listInsertionElt' : 'input',
-            'listInsertionPosition' : 'after',
-            'acceptFreeText' : true
-          });
-        }
+        _createSuggest(item, 'disorder');
         item.addClassName('initialized');
-        document.observe('ms:suggest:containerCreated', function(event) {
-          if (event.memo && event.memo.suggest === item._suggest) {
-            item._suggest.container.setStyle({'overflow': 'auto', 'maxHeight': document.viewport.getHeight() - item._suggest.container.cumulativeOffset().top + 'px'});
-          }
-        });
       }
     });
+
     // genes
-    this.form.select('input.suggest-genes').each(function(item) {
+    this.form.select('select.suggest-genes').each(function(item) {
       if (!item.hasClassName('initialized')) {
-        var geneServiceURL = new XWiki.Document('GeneNameService', 'PhenoTips').getURL('get', 'outputSyntax=plain');
-        item._suggest = new PhenoTips.widgets.Suggest(item, {
-          script: geneServiceURL + '&json=true&',
-          varname: 'q',
-          noresults: 'No matching terms',
-          resultsParameter : 'docs',
-          json: true,
-          resultId : 'symbol',
-          resultValue : 'symbol',
-          resultInfo : {},
-          enableHierarchy: false,
-          tooltip :false,
-          fadeOnClear : false,
-          timeout : 30000,
-          parentContainer : $('body')
-        });
-        if (item.hasClassName('multi') && typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
-          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
-            'showKey' : false,
-            'showTooltip' : false,
-            'showDeleteTool' : true,
-            'enableSort' : false,
-            'showClearTool' : true,
-            'inputType': 'hidden',
-            'listInsertionElt' : 'input',
-            'listInsertionPosition' : 'after',
-            'acceptFreeText' : true
-          });
-        }
+        _createSuggest(item, 'gene');
         item.addClassName('initialized');
-        document.observe('ms:suggest:containerCreated', function(event) {
-          if (event.memo && event.memo.suggest === item._suggest) {
-            item._suggest.container.setStyle({'overflow': 'auto', 'maxHeight': document.viewport.getHeight() - item._suggest.container.cumulativeOffset().top + 'px'});
-          }
-        });
       }
     });
-    // HPO terms
-    this.form.select('input.suggest-hpo').each(function(item) {
+
+    // phenotype terms
+    this.form.select('select.suggest-hpo').each(function(item) {
       if (!item.hasClassName('initialized')) {
-        var solrServiceURL = HPOTerm.getServiceURL();
-        item._suggest = new PhenoTips.widgets.Suggest(item, {
-          script: solrServiceURL + 'rows=100&',
-          queryProcessor: typeof(PhenoTips.widgets.SolrQueryProcessor) == 'undefined' ? null : new PhenoTips.widgets.SolrQueryProcessor({
-            'name' : {'wordBoost': 10, 'phraseBoost': 20},
-            'nameSpell' : {'wordBoost': 18, 'phraseBoost': 36, 'stubBoost': 14},
-            'nameExact' : {'phraseBoost': 100},
-            'namePrefix' : {'phraseBoost': 30},
-            'synonym' : {'wordBoost': 6, 'phraseBoost': 15},
-            'synonymSpell' : {'wordBoost': 10, 'phraseBoost': 25, 'stubBoost': 7},
-            'synonymExact' : {'phraseBoost': 70},
-            'synonymPrefix' : {'phraseBoost': 20},
-            'text' : {'wordBoost': 1, 'phraseBoost': 3, 'stubBoost': 1},
-            'textSpell' : {'wordBoost': 2, 'phraseBoost': 5, 'stubBoost': 2, 'stubTrigger': true},
-            'id' : {'activationRegex' : /^HP:[0-9]+$/i, 'mandatory' : true, 'transform': function(query) {
-              return query.toUpperCase().replace(/:/g, '\\:');
-            }},
-            'alt_id' : {'activationRegex' : /^HP:[0-9]+$/i, 'mandatory' : true, 'transform': function(query) {
-              return query.toUpperCase().replace(/:/g, '\\:');
-            }}
-          }, {
-            'term_category': ['HP:0000118']
-          }
-          ),
-          varname: 'q',
-          noresults: 'No matching terms',
-          json: true,
-          resultsParameter : 'rows',
-          resultId : 'id',
-          resultValue : 'name',
-          resultAltName: 'synonym',
-          resultCategory : 'term_category',
-          resultInfo : {},
-          enableHierarchy: false,
-          resultParent : 'is_a',
-          fadeOnClear : false,
-          timeout : 30000,
-          parentContainer : $('body')
-        });
-        if (item.hasClassName('multi') && typeof(PhenoTips.widgets.SuggestPicker) != 'undefined') {
-          item._suggestPicker = new PhenoTips.widgets.SuggestPicker(item, item._suggest, {
-            'showKey' : false,
-            'showTooltip' : false,
-            'showDeleteTool' : true,
-            'enableSort' : false,
-            'showClearTool' : true,
-            'inputType': 'hidden',
-            'listInsertionElt' : 'input',
-            'listInsertionPosition' : 'after',
-            'acceptFreeText' : true
-          });
-        }
+        _createSuggest(item, 'phenotype');
         item.addClassName('initialized');
-        document.observe('ms:suggest:containerCreated', function(event) {
-          if (event.memo && event.memo.suggest === item._suggest) {
-            item._suggest.container.setStyle({'overflow': 'auto', 'maxHeight': document.viewport.getHeight() - item._suggest.container.cumulativeOffset().top + 'px'});
-          }
-        });
       }
     });
 
@@ -324,9 +233,18 @@ var NodeMenu = Class.create({
         } // otherwise a field change triggers an update which triggers field change etc
         var target = _this.targetNode;
         if (!target) {
+          console.log('Attempted to update field without focus on a node');
           return;
         }
-        _this.fieldMap[field.name].crtValue = field._getValue && field._getValue()[0];
+
+        var newValue = field._getValue && field._getValue() || undefined;
+        if (Array.isArray(newValue)) {
+          _this.fieldMap[field.name].crtValue = newValue[0];
+        } else {
+          console.log('Received invalid field value ' + newValue + ' for field ' + field.name);
+          return;
+        }
+
         var method = _this.fieldMap[field.name]['function'];
 
         if (target.getSummary()[field.name].value == _this.fieldMap[field.name].crtValue) {
@@ -349,11 +267,7 @@ var NodeMenu = Class.create({
     });
   },
 
-  update: function(newTarget) {
-    if (newTarget) {
-      this.targetNode = newTarget;
-    }
-
+  update: function() {
     if (this.targetNode) {
       this._updating = true;   // needed to avoid infinite loop: update -> _attachFieldEventListeners -> update -> ...
       this._setCrtData(this.targetNode.getSummary());
@@ -433,77 +347,59 @@ var NodeMenu = Class.create({
     },
     'disease-picker' : function (data) {
       var result = this._generateEmptyField(data);
-      var diseasePicker = new Element('input', {type: 'text', 'class': 'suggest multi suggest-omim', name: data.name});
+      var diseasePicker = new Element('select', {multiple: 'multiple', 'class': 'suggest-omim', name: data.name});
       result.insert(diseasePicker);
       diseasePicker._getValue = function() {
-        var results = [];
-        var container = this.up('.field-box');
-        if (container) {
-          container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
-            results.push(new Disorder(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
-          });
+        var target = jQuery(this);
+        if (target && target[0] && target[0].selectize) {
+          var val = target[0].selectize.getValue();
+          if (val) {
+            return [val];
+          } else {
+            return [];
+          }
         }
-        return [results];
+        return [];
       }.bind(diseasePicker);
-      // Forward the 'custom:selection:changed' to the input
-      var _this = this;
-      document.observe('custom:selection:changed', function(event) {
-        if (event.memo && event.memo.fieldName == data.name && event.memo.trigger && event.findElement() != event.memo.trigger && !event.memo.trigger._silent) {
-          Event.fire(event.memo.trigger, 'custom:selection:changed');
-          _this.reposition();
-        }
-      });
-      this._attachFieldEventListeners(diseasePicker, ['custom:selection:changed']);
+      this._attachFieldEventListeners(diseasePicker, ['xwiki:customchange']);
       return result;
     },
     'hpo-picker' : function (data) {
       var result = this._generateEmptyField(data);
-      var hpoPicker = new Element('input', {type: 'text', 'class': 'suggest multi suggest-hpo', name: data.name});
+      var hpoPicker = new Element('select', {multiple: 'multiple', 'class': 'suggest-hpo', name: data.name});
       result.insert(hpoPicker);
       hpoPicker._getValue = function() {
-        var results = [];
-        var container = this.up('.field-box');
-        if (container) {
-          container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
-            results.push(new HPOTerm(item.value, item.next('.value') && item.next('.value').firstChild.nodeValue || item.value));
-          });
+        var target = jQuery(this);
+        if (target && target[0] && target[0].selectize) {
+          var val = target[0].selectize.getValue();
+          if (val) {
+            return [val];
+          } else {
+            return [];
+          }
         }
-        return [results];
+        return [];
       }.bind(hpoPicker);
-      // Forward the 'custom:selection:changed' to the input
-      var _this = this;
-      document.observe('custom:selection:changed', function(event) {
-        if (event.memo && event.memo.fieldName == data.name && event.memo.trigger && event.findElement() != event.memo.trigger && !event.memo.trigger._silent) {
-          Event.fire(event.memo.trigger, 'custom:selection:changed');
-          _this.reposition();
-        }
-      });
-      this._attachFieldEventListeners(hpoPicker, ['custom:selection:changed']);
+      this._attachFieldEventListeners(hpoPicker, ['xwiki:customchange']);
       return result;
     },
     'gene-picker' : function (data) {
       var result = this._generateEmptyField(data);
-      var genePicker = new Element('input', {type: 'text', 'class': 'suggest multi suggest-genes', name: data.name});
+      var genePicker = new Element('select', {multiple: 'multiple', 'class': 'suggest-genes', name: data.name});
       result.insert(genePicker);
       genePicker._getValue = function() {
-        var results = [];
-        var container = this.up('.field-box');
-        if (container) {
-          container.select('input[type=hidden][name=' + data.name + ']').each(function(item){
-            results.push(item.next('.value') && item.next('.value').firstChild.nodeValue || item.value);
-          });
+        var target = jQuery(this);
+        if (target && target[0] && target[0].selectize) {
+          var val = target[0].selectize.getValue();
+          if (val) {
+            return [val];
+          } else {
+            return [];
+          }
         }
-        return [results];
+        return [];
       }.bind(genePicker);
-      // Forward the 'custom:selection:changed' to the input
-      var _this = this;
-      document.observe('custom:selection:changed', function(event) {
-        if (event.memo && event.memo.fieldName == data.name && event.memo.trigger && event.findElement() != event.memo.trigger && !event.memo.trigger._silent) {
-          Event.fire(event.memo.trigger, 'custom:selection:changed');
-          _this.reposition();
-        }
-      });
-      this._attachFieldEventListeners(genePicker, ['custom:selection:changed']);
+      this._attachFieldEventListeners(genePicker, ['xwiki:customchange']);
       return result;
     },
     'select' : function (data) {
@@ -562,7 +458,7 @@ var NodeMenu = Class.create({
   },
 
   hideSuggestPicker: function() {
-    this.form.select('input.suggest').each(function(item) {
+    this.form.select('select.suggest').each(function(item) {
       if (item._suggest) {
         item._suggest.clearSuggestions();
       }
@@ -684,47 +580,61 @@ var NodeMenu = Class.create({
       }
     },
     'disease-picker' : function (container, values) {
-      var _this = this;
-      var target = container.down('input[type=text].suggest-omim');
-      if (target && target._suggestPicker) {
-        target._silent = true;
-        target._suggestPicker.clearAcceptedList();
-        if (values) {
-          values.each(function(v) {
-            target._suggestPicker.addItem(v.id, v.value, '');
-            _this._updateDisorderColor(v.id, editor.getDisorderLegend().getObjectColor(v.id));
+      var target = jQuery(container).find('select.suggest-omim');
+      if (target && target[0] && target[0].selectize) {
+        if (Array.isArray(values)) {
+          var ids = [];
+          // Diseases are an array of {id, value} objects
+          values.forEach(function (value) {
+            if (value && value.hasOwnProperty("id")) {
+              ids.push(value.id);
+            }
           });
+          target[0].selectize.clearOptions();
+          var currentDisorders = editor.getDisorderLegend().getCurrentTerms();
+          for (var disorder of currentDisorders){
+            target[0].selectize.addOption({'text': disorder.getName(), 'value': disorder.getID()});
+          }
+          target[0].selectize.setValue(ids, true);
+          target[0].selectize.refreshOptions(false);
         }
-        target._silent = false;
       }
     },
     'hpo-picker' : function (container, values) {
-      var _this = this;
-      var target = container.down('input[type=text].suggest-hpo');
-      if (target && target._suggestPicker) {
-        target._silent = true;
-        target._suggestPicker.clearAcceptedList();
-        if (values) {
-          values.each(function(v) {
-            target._suggestPicker.addItem(v.id, v.value, '');
+      var target = jQuery(container).find('select.suggest-hpo');
+      if (target && target[0] && target[0].selectize) {
+        if (Array.isArray(values)) {
+          var ids = [];
+          // HPO terms are an array of {id, value} objects
+          values.forEach(function (value) {
+            if (value && value.hasOwnProperty("id")) {
+              ids.push(value.id);
+            }
           });
+          target[0].selectize.clearOptions();
+          var currentPhenotypes = editor.getPhenotypeLegend().getCurrentTerms();
+          for (var phenotype of currentPhenotypes){
+            target[0].selectize.addOption({'text': phenotype.getName(), 'value': phenotype.getID()});
+          }
+          target[0].selectize.setValue(ids, true);
+          target[0].selectize.refreshOptions(false);
         }
-        target._silent = false;
       }
     },
     'gene-picker' : function (container, values) {
-      var _this = this;
-      var target = container.down('input[type=text].suggest-genes');
-      if (target && target._suggestPicker) {
-        target._silent = true;
-        target._suggestPicker.clearAcceptedList();
-        if (values) {
-          values.each(function(v) {
-            target._suggestPicker.addItem(v, v, '');
-            _this._updateGeneColor(v, editor.getGeneLegend().getObjectColor(v));
-          });
+      var target = jQuery(container).find('select.suggest-genes');
+      if (target && target[0] && target[0].selectize) {
+        if (Array.isArray(values)) {
+          // Genes are just a straight array of strings
+          target[0].selectize.clearOptions();
+          var currentGenes = editor.getGeneLegend().getCurrentTerms();
+          for (var gene of currentGenes){
+            console.log("Adding options " + gene.getID() + "=>" + gene.getName());
+            target[0].selectize.addOption({'text': gene.getName(), 'value': gene.getID()});
+          }
+          target[0].selectize.setValue(values, true);
+          target[0].selectize.refreshOptions(false);
         }
-        target._silent = false;
       }
     },
     'select' : function (container, value) {

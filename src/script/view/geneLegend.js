@@ -1,6 +1,5 @@
 import Raphael from 'pedigree/raphael';
 import Legend from 'pedigree/view/legend';
-import Person from 'pedigree/view/person';
 
 /**
  * Class responsible for keeping track of candidate genes.
@@ -9,10 +8,10 @@ import Person from 'pedigree/view/person';
  * @class GeneLegend
  * @constructor
  */
-var GeneLegend = Class.create( Legend, {
+const GeneLegend = Class.create(Legend, {
 
-  initialize: function($super) {
-    $super('Candidate Genes');
+  initialize: function ($super, terminology) {
+    $super('Candidate Genes', terminology);
   },
 
   _getPrefix: function(id) {
@@ -29,7 +28,7 @@ var GeneLegend = Class.create( Legend, {
      */
   _generateElement: function($super, geneID, name) {
     if (!this._objectColors.hasOwnProperty(geneID)) {
-      var color = this._generateColor(geneID);
+      const color = this._generateColor(geneID);
       this._objectColors[geneID] = color;
       document.fire('gene:color', {'id' : geneID, color: color});
     }
@@ -50,7 +49,7 @@ var GeneLegend = Class.create( Legend, {
       return this._objectColors[geneID];
     }
 
-    var usedColors = Object.values(this._objectColors),
+    let usedColors = Object.values(this._objectColors),
       // green palette
       prefColors = ['#81a270', '#c4e8c4', '#56a270', '#b3b16f', '#4a775a', '#65caa3'];
     usedColors.each( function(color) {
@@ -59,8 +58,8 @@ var GeneLegend = Class.create( Legend, {
     if(prefColors.length > 0) {
       return prefColors[0];
     } else {
-      var randomColor = Raphael.getColor();
-      while(randomColor == '#ffffff' || usedColors.indexOf(randomColor) != -1) {
+      let randomColor = Raphael.getColor();
+      while(randomColor === '#ffffff' || usedColors.indexOf(randomColor) !== -1) {
         randomColor = '#'+((1<<24)*Math.random()|0).toString(16);
       }
       return randomColor;

@@ -5,7 +5,7 @@ import DynamicPositionedGraph from 'pedigree/model/dynamicGraph';
 import Helpers from 'pedigree/model/helpers';
 import Workspace from 'pedigree/view/workspace';
 import DisorderLegend from 'pedigree/view/disorderLegend';
-import HPOLegend from 'pedigree/view/hpoLegend';
+import PhenotypeLegend from 'pedigree/view/phenotypeLegend';
 import GeneLegend from 'pedigree/view/geneLegend';
 import ExportSelector from 'pedigree/view/exportSelector';
 import ImportSelector from 'pedigree/view/importSelector';
@@ -18,6 +18,15 @@ import PedigreeEditorParameters from 'pedigree/pedigreeEditorParameters';
 import DefaultFhirTerminologyHelper from 'pedigree/DefaultFhirTerminologyHelper';
 
 import '../style/editor.css';
+import CTSSTerminology from 'pedigree/terminology/CTSSTerminology';
+import FHIRTerminology from 'pedigree/terminology/FHIRTerminology';
+import DelegatingTerminology from 'pedigree/terminology/DelegatingTerminology';
+import StaticTerminology from 'pedigree/terminology/StaticTerminology';
+import EmptyTerminology from 'pedigree/terminology/EmptyTerminology';
+import {DisorderTermType} from 'pedigree/terminology/disorderTerm';
+import {PhenotypeTermType} from 'pedigree/terminology/phenotypeTerm';
+import {GeneTermType} from 'pedigree/terminology/geneTerm';
+import BioportalTerminology from './terminology/BioportalTerminology';
 
 /**
  * The main class of the Pedigree Editor, responsible for initializing all the basic elements of the app.
@@ -62,10 +71,26 @@ var PedigreeEditor = Class.create({
     this._partnershipMenu = this.generatePartnershipMenu();
     this._nodetypeSelectionBubble = new NodetypeSelectionBubble(false);
     this._siblingSelectionBubble  = new NodetypeSelectionBubble(true);
-    this._disorderLegend = new DisorderLegend();
-    this._geneLegend = new GeneLegend();
-    this._hpoLegend = new HPOLegend();
-    this._fhirTerminologyHelper = options.fhirTerminologyHelper || new DefaultFhirTerminologyHelper();
+    this._disorderLegend = new DisorderLegend(this._initialiseTerminology(DisorderTermType, options));
+    this._geneLegend = new GeneLegend(this._initialiseTerminology(GeneTermType, options));
+    this._phenotypeLegend = new PhenotypeLegend(this._initialiseTerminology(PhenotypeTermType, options));
+
+    if (options.hasOwnProperty('fhirTerminologyHelper')){
+      console.log("Using passed terminology helper");
+      this._fhirTerminologyHelper = options.fhirTerminologyHelper;
+    } else if (options.hasOwnProperty('fhirTerminologyHelperOptions')){
+      let fhirTerminologyHelperOptions = options.fhirTerminologyHelperOptions;
+      console.log("Creating terminology helper using options", fhirTerminologyHelperOptions);
+      this._fhirTerminologyHelper = new DefaultFhirTerminologyHelper(
+        fhirTerminologyHelperOptions.disorderCodeSystem,
+        fhirTerminologyHelperOptions.phenotypeCodeSystem,
+        fhirTerminologyHelperOptions.geneCodeSystem);
+      console.log("Creating terminology helper using options", fhirTerminologyHelperOptions, this._fhirTerminologyHelper);
+    } else {
+      console.log("Creating default terminology helper with no options");
+      this._fhirTerminologyHelper = new DefaultFhirTerminologyHelper();
+    }
+
 
     this._view = new View();
 
@@ -235,6 +260,19 @@ var PedigreeEditor = Class.create({
     return this._workspace;
   },
 
+  getLegend: function(termType) {
+    switch (termType){
+    case DisorderTermType:
+      return this.getDisorderLegend();
+    case PhenotypeTermType:
+      return this.getPhenotypeLegend();
+    case GeneTermType:
+      return this.getGeneLegend();
+    }
+    console.log('Unknown term type ' + termType);
+    return null;
+  },
+
   /**
      * @method getDisorderLegend
      * @return {Legend} Responsible for managing and displaying the disorder legend
@@ -244,11 +282,11 @@ var PedigreeEditor = Class.create({
   },
 
   /**
-     * @method getHPOLegend
+     * @method getPhenotypeLegend
      * @return {Legend} Responsible for managing and displaying the phenotype/HPO legend
      */
-  getHPOLegend: function() {
-    return this._hpoLegend;
+  getPhenotypeLegend: function() {
+    return this._phenotypeLegend;
   },
 
   /**
@@ -698,6 +736,83 @@ var PedigreeEditor = Class.create({
     var scale = PedigreeEditorParameters.attributes.layoutScale;
     return { x: x * scale.xscale,
       y: y * scale.yscale };
+  },
+
+  _initialiseTerminology: function(termType, options){
+    const defaultIdRegex = /.+/;
+    const defaultSearchCount = 20;
+    const defaultTermOptions = {
+      'disorder': {
+        'type' : 'CTSS',
+        'ctssBaseUrl' : new XWiki.Document('OmimService', 'PhenoTips').getURL('get', 'outputSyntax=plain'),
+        'valueColumn' : 'id',
+        'textColumn' : 'name'
+      },
+      'phenotype': {
+        'type' : 'CTSS',
+        'validIdRegex' : /^HP:(\d)+$/i,
+        'ctssBaseUrl' : new XWiki.Document('SolrService', 'PhenoTips').getURL('get'),
+        'valueColumn' : 'id',
+        'textColumn' : 'name'
+      },
+      'gene': {
+        'type' : 'Empty'
+      }
+    };
+
+    if (options.hasOwnProperty(termType + 'Terminology')){
+      // the terminology object was passed into the options
+      return options[termType + 'Terminology'];
+    }
+    let resultTerminology;
+    let termOptions = options.hasOwnProperty(termType + 'Options') ? options[termType + 'Options'] : Object.assign({}, defaultTermOptions[termType]);
+    switch (termOptions.type){
+    case 'CTSS':
+      resultTerminology = new CTSSTerminology(termType,
+        termOptions.validIdRegex ? termOptions.validIdRegex : defaultIdRegex,
+        termOptions.searchCount ? termOptions.searchCount : defaultSearchCount,
+        termOptions.ctssBaseUrl, termOptions.valueColumn, termOptions.textColumn);
+      break;
+    case 'FHIR':
+      resultTerminology =  new FHIRTerminology(termType, termOptions.codeSystem,
+        termOptions.validIdRegex ? termOptions.validIdRegex : defaultIdRegex,
+        termOptions.searchCount ? termOptions.searchCount : defaultSearchCount,
+        termOptions.fhirBaseUrl, termOptions.valueSet,
+        termOptions.lookupAjaxOptions ? termOptions.lookupAjaxOptions : {},
+        termOptions.searchAjaxOptions ? termOptions.searchAjaxOptions : {});
+      break;
+    case 'Bioportal':
+      resultTerminology = new BioportalTerminology(termType,
+        termOptions.validIdRegex ? termOptions.validIdRegex : defaultIdRegex,
+        termOptions.searchCount ? termOptions.searchCount : defaultSearchCount,
+        termOptions.bioportalBaseUrl, termOptions.ontology, termOptions.apiKey,
+        termOptions.lookupAjaxOptions ? termOptions.lookupAjaxOptions : {},
+        termOptions.searchAjaxOptions ? termOptions.searchAjaxOptions : {});
+      break;
+    case 'Delegating':
+      resultTerminology = new DelegatingTerminology(termType,
+        termOptions.validIdRegex ? termOptions.validIdRegex : defaultIdRegex,
+        termOptions.searchCount ? termOptions.searchCount : defaultSearchCount,
+        termOptions.lookupUrlFn, termOptions.processLookupResponseFn, termOptions.lookupAjaxOptionsFn,
+        termOptions.searchUrlFn, termOptions.processSearchResponseFn, termOptions.searchAjaxOptionsFn);
+      break;
+    case 'Static':
+      resultTerminology = new StaticTerminology(termType,
+        termOptions.validIdRegex ? termOptions.validIdRegex : defaultIdRegex,
+        termOptions.searchCount ? termOptions.searchCount : defaultSearchCount,
+        termOptions.terms
+      );
+      break;
+    case 'Empty':
+      resultTerminology = new EmptyTerminology(termType,
+        termOptions.validIdRegex ? termOptions.validIdRegex : defaultIdRegex,
+        termOptions.searchCount ? termOptions.searchCount : defaultSearchCount);
+      break;
+    default:
+      console.error('Unknown terminology type ' + termOptions.type);
+      resultTerminology = new EmptyTerminology(termType, defaultIdRegex, defaultSearchCount);
+    }
+    return resultTerminology;
   }
 });
 
