@@ -603,10 +603,10 @@ GA4GHFHIRConverter.extractDataFromPatient = function (patientResource,
     properties.gender = 'F';
   }
 
-  if (patientResource.externalID) {
-    if (patientResource.externalID.system ===
+  if (patientResource.identifier) {
+    if (patientResource.identifier.system ===
       'https://github.com/phenotips/open-pedigree?externalID') {
-      properties.externalID = patientResource.externalID.value;
+      properties.externalID = patientResource.identifier.value;
     }
   }
 
@@ -1290,7 +1290,7 @@ GA4GHFHIRConverter.buildPedigreeIndividual = function (containedId, nodeProperti
   }
 
   if (nodeProperties.externalID) {
-    patientResource.externalID = {
+    patientResource.identifier = {
       'system': 'https://github.com/phenotips/open-pedigree?externalID',
       'value': nodeProperties.externalID
     };
